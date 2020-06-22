@@ -1,0 +1,17 @@
+gee-auth-key.json
+api/shapes/*
+config.py
+appconfigs.js
+*.pyc
+ramipy
+ramipy/*
+ceo-gateway
+
+__pycache__
+__pycache__/*
+
+db.sqlite3
+Readme.md
+
+static/*
+migrations/*
