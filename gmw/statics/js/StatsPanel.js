@@ -90,7 +90,7 @@ class StatsPanel extends React.Component{
     if (!USER_STATE){
       var content = <div style={{'textAlign':'center','width':'100%'}}>
         <p> Login to view your subscriptions </p>
-        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
+        <button type="button" className="btn map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
       </div>
     }
     else{
@@ -106,7 +106,8 @@ class StatsPanel extends React.Component{
         </div>
       </div>
     }
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'250px','maxHeight':'calc( 100% - 250px )','overflowY':'auto'}}>
+    return <div className='popup-container'>
+      <h3><b>STATS</b></h3>
       {content}
     </div>
   }

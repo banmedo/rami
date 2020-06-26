@@ -112,7 +112,7 @@ class SubscribePanel extends React.Component{
     if (selreg && (this.props.list.indexOf(selreg[0]+'_'+selreg[1])==-1)){
       var reg = this.props.selectedRegion[1].split('_')
       subtocurrent = <div style={{'textAlign':'center','width':'100%'}}>
-        <button type="button" className="btn btn-warning map-upd-btn" onClick={(e)=>{this.addSubs(e,this.props.selectedRegion)}}>
+        <button type="button" className="btn map-upd-btn" onClick={(e)=>{this.addSubs(e,this.props.selectedRegion)}}>
           Subscribe to {reg[1]}, <i>{reg[0]}</i>
         </button>
       </div>
@@ -127,11 +127,11 @@ class SubscribePanel extends React.Component{
     if (!USER_STATE){
       content = <div style={{'textAlign':'center','width':'100%'}}>
         <p> Login to view your subscriptions </p>
-        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
+        <button type="button" className="btn map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
       </div>
     }
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'50px','maxHeight':'500px'}}>
-      <h1><b> YOUR SUBSCRIPTIONS </b></h1>
+    return <div className='popup-container'>
+      <h3><b> YOUR SUBSCRIPTIONS </b></h3>
       {content}
     </div>
   }

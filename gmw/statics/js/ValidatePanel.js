@@ -172,7 +172,7 @@ class ValidatePanel extends React.Component{
     if (!USER_STATE){
       var content = <div style={{'textAlign':'center','width':'100%'}}>
         <p> Login to validate the data </p>
-        <button type="button" className="btn btn-warning map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
+        <button type="button" className="btn map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
       </div>
     }else{
       var selDate = this.props.selectedDate;
@@ -181,7 +181,7 @@ class ValidatePanel extends React.Component{
         if (match.length == 0){
           var button = <div style={{'textAlign':'center','width':'100%'}}>
           <br/>
-            <button type="button" className="btn btn-warning map-upd-btn" onClick={(e)=>{this.createProject(e,selDate);}} disabled={!this.state.createstate}>
+            <button type="button" className="btn map-upd-btn" onClick={(e)=>{this.createProject(e,selDate);}} disabled={!this.state.createstate}>
               Create new project for {selDate}</button>
           </div>
         }
@@ -230,8 +230,8 @@ class ValidatePanel extends React.Component{
       </div>
     }
 
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'100px',maxHeight:'calc(100% - 100px)',overflowY:'auto'}}>
-      <h1><b> VALIDATION </b></h1>
+    return <div className='popup-container'>
+      <h3><b>VALIDATION</b></h3>
       {content}
     </div>
   }

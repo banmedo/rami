@@ -1,13 +1,13 @@
-class SideIcons extends React.Component{
+class SmartIcons extends React.Component{
   render(){
     var parentProps = {
-      className:'sidebar-icon '+this.props.parentclass,
+      className:'smart-icon '+this.props.parentclass,
       onClick: this.props.clickhandler,
       title: this.props.tooltip
     }
-    return <button {...parentProps}>
+    return <div {...parentProps}>
       <span className={'glyphicon '+this.props.glyphicon}></span>
-    </button>
+    </div>
   }
 }
 

@@ -43,7 +43,7 @@ class DownloadPanel extends React.Component{
     var button='', link='';
     if(this.state.clipOption && this.props.selectedDate){
       button = <div style={{'textAlign':'center','width':'100%'}}>
-        <button type="button" className="btn btn-warning map-upd-btn" onClick={this.getDownloadUrl.bind(this)} disabled={this.state.fetching}>
+        <button type="button" className="btn map-upd-btn" onClick={this.getDownloadUrl.bind(this)} disabled={this.state.fetching}>
           Get download URL for {this.props.selectedDate}
         </button>
       </div>
@@ -56,8 +56,8 @@ class DownloadPanel extends React.Component{
       </p>
     }
 
-    return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'350px'}}>
-      <h1><b> DOWNLOAD DATA </b></h1>
+    return <div className='popup-container'>
+      <h3><b> DOWNLOAD DATA </b></h3>
       <b>Select Region</b><br/>
       <input type='radio' name='downloadRegion' value={1} onChange={this.radioChange.bind(this)}/> Complete Data <br/>
       <input type='radio' name='downloadRegion' value={2} onChange={this.radioChange.bind(this)} disabled={!this.props.regionSelected}/> Selected Municipality <br/>

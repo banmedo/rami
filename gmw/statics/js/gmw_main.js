@@ -31,7 +31,10 @@ class OuterShell extends React.Component{
     subscribehidden:true,
     validatehidden:true,
     searchhidden:true,
-    appinfohidden:true
+    appinfohidden:true,
+    showSelectLayers:true,
+    showMineLayers:false,
+    displayBox:false,
   }
   persistentstates = {
     advancedoptions:false,
@@ -226,56 +229,57 @@ class OuterShell extends React.Component{
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/dark-v9',
-      center: [-73.5609339,4.6371205],
+      center: [-75.5609339,-10],
       zoom: 5
     });
 
     this.map.on('load', (e) => {
-      this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}));
-      t = this.map
-      this.map.addSource("mapbox-streets", {
-        "type": "raster",
-        "url": "mapbox://mapbox.streets",
-        "tileSize": 256
-      });
-      this.map.addLayer({
-        'id': 'mapbox-streets',
-        'type': 'raster',
-        'source': 'mapbox-streets'
-      });
+      this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-left');
+      this.map.addControl(new mapboxgl.ScaleControl({maxWidth: 80}),'bottom-left');
+      // t = this.map
+      // this.map.addSource("mapbox-streets", {
+      //   "type": "raster",
+      //   "url": "mapbox://mapbox.streets",
+      //   "tileSize": 256
+      // });
+      // this.map.addLayer({
+      //   'id': 'mapbox-streets',
+      //   'type': 'raster',
+      //   'source': 'mapbox-streets'
+      // });
 
-      this.addLayerSources(['ee-Layer','municipal_bounds','national_parks','other_authorizations',
-                            'tierras_de_com','resguardos','legal_mines']);
+      // this.addLayerSources(['ee-Layer','municipal_bounds','national_parks','other_authorizations',
+      //                       'tierras_de_com','resguardos','legal_mines']);
 
-      this.flags.layeradded = true;
-      const overlays = {
-        'ee-Layer': 'Prediction',
-        'municipal_bounds': 'Municipal Boundaries',
-        'legal_mines' : 'Legal mines',
-        'national_parks': 'National Parks',
-        'other_authorizations': 'Other Authorizations',
-        'tierras_de_com': 'Ethnic territories I',
-        'resguardos' : 'Ethnic territories II',
-        'mapbox-streets':'Mapbox Streets'
-      }
-      var opacity = new OpacityControl({
-        // baseLayers:baseLayers,
-        overLayers:overlays,
-        opacityControl:true
-      })
-      this.map.addControl(opacity, 'bottom-right');
-      this.getGEELayers(['municipal_bounds','national_parks','other_authorizations',
-                         'tierras_de_com','resguardos','legal_mines']);
+      // this.flags.layeradded = true;
+      // const overlays = {
+      //   'ee-Layer': 'Prediction',
+      //   'municipal_bounds': 'Municipal Boundaries',
+      //   'legal_mines' : 'Legal mines',
+      //   'national_parks': 'National Parks',
+      //   'other_authorizations': 'Other Authorizations',
+      //   'tierras_de_com': 'Ethnic territories I',
+      //   'resguardos' : 'Ethnic territories II',
+      //   'mapbox-streets':'Mapbox Streets'
+      // }
+      // var opacity = new OpacityControl({
+      //   // baseLayers:baseLayers,
+      //   overLayers:overlays,
+      //   opacityControl:true
+      // })
+      // // this.map.addControl(opacity, 'bottom-right');
+      // this.getGEELayers(['municipal_bounds','national_parks','other_authorizations',
+      //                    'tierras_de_com','resguardos','legal_mines']);
 
       this.map.on('mousemove',(e)=>{
         var lat = Math.round(e.lngLat.lat*10000)/10000;
         var lng = Math.round(e.lngLat.lng*10000)/10000;
-        var hud = document.getElementById('lnglathud');
+        var hud = document.getElementById('lng-lat-hud');
         hud.style.display = 'inherit';
         hud.innerHTML = [lat,lng].join(', ');
       })
       this.map.on('mouseout',(e)=>{
-        var hud = document.getElementById('lnglathud');
+        var hud = document.getElementById('lng-lat-hud');
         hud.style.display = 'none';
       })
     });
@@ -296,7 +300,19 @@ class OuterShell extends React.Component{
     // call initial state functions
   }
 
+  getSwitch(label){
+    return <div className="sidebar-sub-icon w_100">
+      <div className = "sub-span">{label}</div>
+      <label class="switch">
+        <input type="checkbox"/>
+        <span class="slider round"></span>
+      </label>
+    </div>;
+  }
 
+  setDisplayBox(val){
+    (this.state.displayBox==val)?this.setState({displayBox:false}):this.setState({displayBox:val});
+  }
   // set up actions to render app
   render(){
     var advancedbuttons = '';
@@ -319,65 +335,98 @@ class OuterShell extends React.Component{
       </div>
     return <div className='shell' {...this.props}>
       <div ref={el => this.mapContainer = el}></div>
-      <SliderPanel ishidden = {this.state.slidershidden}
+      {/*<SliderPanel ishidden = {this.state.slidershidden}
         slideradjusted = {this.slidersadjusted.bind(this)}
         oncheckchange = {this.imagetypechanged.bind(this)}
         showcomposite = {this.state.showcomposite}
         imageDates = {this.state.imageDates}/>
       <StatsPanel ishidden = {this.state.statshidden}
-        selectedDate = {this.state.selectedDate}/>
-      <DownloadPanel ishidden = {this.state.downloadhidden}
+  selectedDate = {this.state.selectedDate}/>*/}
+      {(this.state.displayBox=="Download")?
+        <DownloadPanel
         regionSelected = {this.state.regionSelected}
-        selectedDate = {this.state.selectedDate}/>
-      <SubscribePanel ishidden = {this.state.subscribehidden}
-        selectedRegion = {this.state.regionSelected}
-        updateSubList = {this.updateSubList.bind(this)}
-        list = {this.state.sublist}/>
-      <ValidatePanel ishidden = {this.state.validatehidden}
-        selectedDate = {this.state.selectedDate}
-        featureNames = {this.state.featureNames}
-        sublist = {this.state.sublist}/>
-      <SearchPanel ishidden = {this.state.searchhidden}
+        selectedDate = {this.state.selectedDate}/>:""}
+      {(this.state.displayBox=="Alert")?
+        <SubscribePanel
+          selectedRegion = {this.state.regionSelected}
+          updateSubList = {this.updateSubList.bind(this)}
+          list = {this.state.sublist}/>:""}
+      {(this.state.displayBox=="Validate")?
+        <ValidatePanel 
+          selectedDate = {this.state.selectedDate}
+          featureNames = {this.state.featureNames}
+          sublist = {this.state.sublist}/>:""}
+      {(this.state.displayBox=="Stats")?
+        <StatsPanel selectedDate = {this.state.selectedDate}/>:""}
+      {(this.state.displayBox=="Search")?
+        <SearchPanel
           pointmapto={this.pointmapto.bind(this)}
           regionSelected={this.regionSelected.bind(this)}
-          featureNames={this.state.featureNames}/>
+          featureNames={this.state.featureNames}/>:""}
       <div className='sidebar' >
-        <div className='sidebar-icon gold-drop app-icon'></div>
+        <div className='gold-drop app-icon'></div>
         {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
-        <SideIcons
-          parentclass={this.state.subscribehidden?'':'active-icon'}
-          glyphicon='glyphicon-envelope'
-          clickhandler={((e) => this.togglePanel(e, 'subscribehidden')).bind(this)}
-          tooltip='Subscribe'/>
-        <SideIcons
-          parentclass={this.state.validatehidden?'':'active-icon'}
-          glyphicon='glyphicon-ok'
-          clickhandler={((e) => this.togglePanel(e, 'validatehidden')).bind(this)}
-          tooltip='Validate'/>
-        <SideIcons
-          parentclass={this.state.searchhidden?'':'active-icon'}
-          glyphicon='glyphicon-search'
-          clickhandler={((e) => this.togglePanel(e, 'searchhidden')).bind(this)}
-          tooltip='Search'/>
-        <button className='sidebar-icon' onClick={(e)=>{this.setState({
-          advancedoptions: !(this.state.advancedoptions),
-          ...this.appstates
-        })}}>
-          <div className='center'>
-            <span className={'glyphicon advanced-icon '+(this.state.advancedoptions?'glyphicon-minus':'glyphicon-plus')}></span>
-            <span className='advanced-text'>Advanced</span>
-          </div>
+        <button className='col-sm-12 sidebar-icon'
+                onClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}>
+                  Methodology & Publications
         </button>
-        {advancedbuttons}
+        <button className={(this.state.showSelectLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
+                onClick={((e) => this.setState({showSelectLayers : !this.state.showSelectLayers})).bind(this)}>
+                  Boundaries
+        </button>
+        {(this.state.showSelectLayers)?
+          <div className="col-sm-12">
+            {this.getSwitch("Region Boundary")}
+            {this.getSwitch("District Boundary")}
+            {this.getSwitch("Protected Areas")}
+            {this.getSwitch("Indigenous Lands Boundary")}
+            {this.getSwitch("Forest Management Concessions")}
+            {this.getSwitch("Mining Concessions")}
+          </div>
+          :""}
+        <button className={(this.state.showMineLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
+                onClick={((e) => this.setState({showMineLayers : !this.state.showMineLayers})).bind(this)}>
+                  Mine Layers
+        </button>
+        {(this.state.showMineLayers)?
+          <div className="col-sm-12">
+            {this.getSwitch("Mine Alers (accumulated)")}
+            {this.getSwitch("Historical Mining Data")}
+            {this.getSwitch("Illegal Mining (Protected Areas/Ind. Territories")}
+            {this.getSwitch("Mining in Concessions")}
+          </div>
+          :""}
+      </div>
+      <div id="smart-buttons">
+        <SmartIcons
+          parentclass={this.state.displayBox=='Alert'?'active-icon':''}
+          glyphicon='glyphicon-envelope'
+          clickhandler={((e) => this.setDisplayBox('Alert')).bind(this)}
+          tooltip='Alerts Subscription'/>
+        <SmartIcons
+          parentclass={this.state.displayBox=='Validate'?'active-icon':''}
+          glyphicon='glyphicon-ok'
+          clickhandler={((e) => this.setDisplayBox('Validate')).bind(this)}
+          tooltip='Validation'/>
+        <SmartIcons
+          parentclass={this.state.displayBox=='Stats'?'active-icon':''}
+          glyphicon='glyphicon-stats'
+          clickhandler={((e) => this.setDisplayBox('Stats')).bind(this)}
+          tooltip='Stats'/>
+        <SmartIcons
+          parentclass={this.state.displayBox=='Search'?'active-icon':''}
+          glyphicon='glyphicon-search'
+          clickhandler={((e) => this.setDisplayBox('Search')).bind(this)}
+          tooltip='Search'/>
+        <SmartIcons
+          parentclass={this.state.displayBox=='Download'?'active-icon':''}
+          glyphicon='glyphicon-save'
+          clickhandler={((e) => this.setDisplayBox('Download')).bind(this)}
+          tooltip='Download'/>
 
-        <SideIcons
-          parentclass='disclaimer'
-          glyphicon='glyphicon-info-sign'
-          clickhandler={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}
-          tooltip='App Info'/>
       </div>
       <AppInfo ishidden={this.state.appinfohidden} onOuterClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}/>
-      <div id="lnglathud">
+      <div id="lng-lat-hud">
       </div>
     </div>
   }
