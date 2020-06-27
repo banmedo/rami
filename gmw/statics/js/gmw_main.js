@@ -303,9 +303,9 @@ class OuterShell extends React.Component{
   getSwitch(label){
     return <div className="sidebar-sub-icon w_100">
       <div className = "sub-span">{label}</div>
-      <label class="switch">
+      <label className="switch">
         <input type="checkbox"/>
-        <span class="slider round"></span>
+        <span className="slider round"></span>
       </label>
     </div>;
   }
