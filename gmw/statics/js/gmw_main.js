@@ -20,24 +20,17 @@ class OuterShell extends React.Component{
   appparams = {
     minprobability:props.minprobability,
     maxprobability:props.maxprobability,
-    minyear:props.minyear,
-    maxyear:props.maxyear
+    minDate:false,
+    maxDate:false
   }
   // initial component states
   appstates = {
-    slidershidden:true,
-    statshidden:true,
-    downloadhidden:true,
-    subscribehidden:true,
-    validatehidden:true,
-    searchhidden:true,
     appinfohidden:true,
     showSelectLayers:true,
     showMineLayers:false,
     displayBox:false,
   }
   persistentstates = {
-    advancedoptions:false,
     showcomposite:false,
     imageDates:[],
     selectedDate:false,
@@ -52,19 +45,25 @@ class OuterShell extends React.Component{
     super(props)
   }
 
-  // function to toggle between visible panels
-  togglePanel(e, panelkey){
-    document.activeElement.blur();
-    var newstate = {[panelkey]:!this.state[panelkey]};
-    this.setState({...this.appstates,...newstate});
+  probSliderUpdated(vals){
+    let probs = vals.split(',');
+    this.setState({
+      minprobability : parseInt(probs[0]),
+      maxprobability : parseInt(probs[1])
+    });
   }
 
-  imagetypechanged(){
-    this.setState({showcomposite:!this.state.showcomposite})
+  dateSliderUpdated(vals){
+    let dates = vals.split(',');
+    this.setState({
+      minDate : dates[0],
+      maxDate : dates[1]
+    });
+    console.log(this.state);
   }
 
   // function to call when slider values are changed
-  slidersadjusted(){
+  imageUpdated(){
     if (this.state.showcomposite){
       var probvals = this.probSlider.getValue().split(',').map((val)=>parseInt(val));
       var yearvals = this.yearSlider.getValue().split(',');
@@ -98,21 +97,13 @@ class OuterShell extends React.Component{
       .then(
         (result) => {
           result.ids.sort();
-          this.yearSlider = new rSlider({
-              target: '#yearSlider',
-              values:result.ids.slice(),
-              step:1,
-              range: true,
-              scale: false,
-              labels:false,
-              set: [this.appparams.minyear, this.appparams.maxyear]
-          });
           result.ids.reverse()
           this.setState({
-            imageDates: result.ids,
-            selectedDate: result.ids[0]
+            imageDates   : result.ids,
+            selectedDate : result.ids[0],
+            minDate      : result.ids[result.ids.length],
+            maxDate      : result.ids[0]
           })
-
           var tileURL = this.URLS.SINGLE_IMAGE+'?id='+result.ids[0]
           this.refreshlayers(tileURL)
         },
@@ -172,8 +163,8 @@ class OuterShell extends React.Component{
           // clear existing tile cache and force map refresh
           this.map.style.sourceCaches[name].clearTiles()
           this.map.style.sourceCaches[name].update(this.map.transform)
-          document.getElementsByClassName("vis-"+name)[0].style["border"] = "solid 1px "+result.style.color;
-          document.getElementsByClassName("vis-"+name)[0].style["background"] = result.style.fillColor;
+          // document.getElementsByClassName("vis-"+name)[0].style["border"] = "solid 1px "+result.style.color;
+          // document.getElementsByClassName("vis-"+name)[0].style["background"] = result.style.fillColor;
           this.map.triggerRepaint()
           if (list.length > 0) this.getGEELayers(list);
         }, (error) => {
@@ -191,9 +182,10 @@ class OuterShell extends React.Component{
       'vis':{'palette':[]}
     });
     this.map.addLayer({
-      'id': name,
-      'type': 'raster',
-      'source': name,
+      'id'     : name,
+      'type'   : 'raster',
+      'source' : name,
+      'layout' : {'visibility':'none'},
       'minzoom': 0,
       'maxzoom': 22
     });
@@ -209,7 +201,7 @@ class OuterShell extends React.Component{
           // clear existing tile cache and force map refresh
           this.map.style.sourceCaches['ee-Layer'].clearTiles()
           this.map.style.sourceCaches['ee-Layer'].update(this.map.transform)
-          document.getElementsByClassName("vis-ee-Layer")[0].style["background"] = '#'+result.visparams.palette[0];
+          // document.getElementsByClassName("vis-ee-Layer")[0].style["background"] = '#'+result.visparams.palette[0];
           this.map.triggerRepaint()
         },
         (error) => {
@@ -223,6 +215,26 @@ class OuterShell extends React.Component{
       regionSelected:[level,name]
     });
   }
+
+  
+  triggerLayer(layername, state){
+    this.map.setLayoutProperty(layername,'visibility',(state?'visible':'none'));
+  }
+
+  getSwitch(label,layername){
+    return <div className="sidebar-sub-icon w_100">
+      <div className = "sub-span">{label}</div>
+      <label className="switch">
+        <input type="checkbox" onChange={((e) => this.triggerLayer(layername,e.target.checked)).bind(this)}/>
+        <span className="slider round"></span>
+      </label>
+    </div>;
+  }
+
+  setDisplayBox(val){
+    (this.state.displayBox==val)?this.setState({displayBox:false}):this.setState({displayBox:val});
+  }
+
   // set up parameters after components are mounted
   componentDidMount(){
     // render maps
@@ -236,17 +248,8 @@ class OuterShell extends React.Component{
     this.map.on('load', (e) => {
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-left');
       this.map.addControl(new mapboxgl.ScaleControl({maxWidth: 80}),'bottom-left');
-      // t = this.map
-      // this.map.addSource("mapbox-streets", {
-      //   "type": "raster",
-      //   "url": "mapbox://mapbox.streets",
-      //   "tileSize": 256
-      // });
-      // this.map.addLayer({
-      //   'id': 'mapbox-streets',
-      //   'type': 'raster',
-      //   'source': 'mapbox-streets'
-      // });
+
+      this.addLayerSources(['ee-Layer']);
 
       // this.addLayerSources(['ee-Layer','municipal_bounds','national_parks','other_authorizations',
       //                       'tierras_de_com','resguardos','legal_mines']);
@@ -283,69 +286,32 @@ class OuterShell extends React.Component{
         hud.style.display = 'none';
       })
     });
-    // render sliders
-    this.probSlider = new rSlider({
-        target: '#probabilitySlider',
-        values: {min:0, max:100},
-        step:1,
-        range: true,
-        scale: false,
-        labels:false,
-        set: [this.appparams.minprobability, this.appparams.maxprobability]
-    });
 
     this.getImageDates();
 
     this.getFeatureNames();
     // call initial state functions
   }
-
-  getSwitch(label){
-    return <div className="sidebar-sub-icon w_100">
-      <div className = "sub-span">{label}</div>
-      <label className="switch">
-        <input type="checkbox"/>
-        <span className="slider round"></span>
-      </label>
-    </div>;
-  }
-
-  setDisplayBox(val){
-    (this.state.displayBox==val)?this.setState({displayBox:false}):this.setState({displayBox:val});
-  }
   // set up actions to render app
   render(){
-    var advancedbuttons = '';
-    if (this.state.advancedoptions) advancedbuttons= <div>
-        <SideIcons
-          parentclass={this.state.statshidden?'':'active-icon'}
-          glyphicon='glyphicon-stats'
-          clickhandler={((e) => this.togglePanel(e, 'statshidden')).bind(this)}
-          tooltip='Stats'/>
-        <SideIcons
-          parentclass={this.state.slidershidden?'':'active-icon'}
-          glyphicon='glyphicon-filter'
-          clickhandler={((e) => this.togglePanel(e, 'slidershidden')).bind(this)}
-          tooltip='Sliders'/>
-        <SideIcons
-          parentclass={this.state.downloadhidden?'':'active-icon'}
-          glyphicon='glyphicon-download-alt'
-          clickhandler={((e) => this.togglePanel(e, 'downloadhidden')).bind(this)}
-          tooltip='Download data'/>
-      </div>
     return <div className='shell' {...this.props}>
       <div ref={el => this.mapContainer = el}></div>
-      {/*<SliderPanel ishidden = {this.state.slidershidden}
-        slideradjusted = {this.slidersadjusted.bind(this)}
-        oncheckchange = {this.imagetypechanged.bind(this)}
-        showcomposite = {this.state.showcomposite}
-        imageDates = {this.state.imageDates}/>
-      <StatsPanel ishidden = {this.state.statshidden}
-  selectedDate = {this.state.selectedDate}/>*/}
+      {(this.state.displayBox=="Filter")?
+        <SliderPanel
+          imageUpdated = {this.imageUpdated.bind(this)}
+          oncheckchange = {((e) => this.setState({showcomposite:!this.state.showcomposite})).bind(this)}
+          showcomposite = {this.state.showcomposite}
+          maxprobability = {this.state.maxprobability}
+          minprobability = {this.state.minprobability}
+          probSliderUpdated = {this.probSliderUpdated.bind(this)}
+          maxDate = {this.state.maxDate}
+          minDate = {this.state.minDate}
+          dateSliderUpdated = {this.dateSliderUpdated.bind(this)}
+          imageDates = {this.state.imageDates}/>:""}
       {(this.state.displayBox=="Download")?
         <DownloadPanel
-        regionSelected = {this.state.regionSelected}
-        selectedDate = {this.state.selectedDate}/>:""}
+          regionSelected = {this.state.regionSelected}
+          selectedDate = {this.state.selectedDate}/>:""}
       {(this.state.displayBox=="Alert")?
         <SubscribePanel
           selectedRegion = {this.state.regionSelected}
@@ -365,7 +331,6 @@ class OuterShell extends React.Component{
           featureNames={this.state.featureNames}/>:""}
       <div className='sidebar' >
         <div className='gold-drop app-icon'></div>
-        {/* <SideIcons parentclass='gold-drop' glyphicon='glyphicon-question-sign' />*/}
         <button className='col-sm-12 sidebar-icon'
                 onClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}>
                   Methodology & Publications
@@ -390,7 +355,7 @@ class OuterShell extends React.Component{
         </button>
         {(this.state.showMineLayers)?
           <div className="col-sm-12">
-            {this.getSwitch("Mine Alers (accumulated)")}
+            {this.getSwitch("Mine Alerts (accumulated)", 'ee-Layer')}
             {this.getSwitch("Historical Mining Data")}
             {this.getSwitch("Illegal Mining (Protected Areas/Ind. Territories")}
             {this.getSwitch("Mining in Concessions")}
@@ -414,6 +379,11 @@ class OuterShell extends React.Component{
           clickhandler={((e) => this.setDisplayBox('Stats')).bind(this)}
           tooltip='Stats'/>
         <SmartIcons
+          parentclass={this.state.displayBox=='Filter'?'active-icon':''}
+          glyphicon='glyphicon-filter'
+          clickhandler={((e) => this.setDisplayBox('Filter')).bind(this)}
+          tooltip='Filter Image'/>
+        <SmartIcons
           parentclass={this.state.displayBox=='Search'?'active-icon':''}
           glyphicon='glyphicon-search'
           clickhandler={((e) => this.setDisplayBox('Search')).bind(this)}
@@ -435,8 +405,6 @@ class OuterShell extends React.Component{
 const props = {
   minprobability:0,
   maxprobability:100,
-  minyear:2000,
-  maxyear:2019
 };
 
 ReactDOM.render(<OuterShell {...props}/>, document.getElementById('main-container'));
