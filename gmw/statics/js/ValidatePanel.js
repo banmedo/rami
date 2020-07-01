@@ -218,7 +218,7 @@ class ValidatePanel extends React.Component{
 
       var content = <div>
         {context}
-        <br/><h2><b>Create a new project:</b></h2>
+        <br/><h4><b>Create a new project:</b></h4>
         Enter Project Name:<br/>
         <input id='projectName' length="2" style={{width:'100%'}}/><br/>
         Select Project Region:<br/>
