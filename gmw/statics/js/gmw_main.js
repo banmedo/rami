@@ -249,7 +249,10 @@ class OuterShell extends React.Component{
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-left');
       this.map.addControl(new mapboxgl.ScaleControl({maxWidth: 80}),'bottom-left');
 
-      this.addLayerSources(['ee-Layer']);
+      let layerlist = ['ee-layer','districts']
+      this.addLayerSources(layerlist.slice());
+      this.getGEELayers(layerlist.slice());
+
 
       // this.addLayerSources(['ee-Layer','municipal_bounds','national_parks','other_authorizations',
       //                       'tierras_de_com','resguardos','legal_mines']);
@@ -342,7 +345,7 @@ class OuterShell extends React.Component{
         {(this.state.showSelectLayers)?
           <div className="col-sm-12">
             {this.getSwitch("Region Boundary")}
-            {this.getSwitch("District Boundary")}
+            {this.getSwitch("District Boundary",'districts')}
             {this.getSwitch("Protected Areas")}
             {this.getSwitch("Indigenous Lands Boundary")}
             {this.getSwitch("Forest Management Concessions")}
