@@ -249,33 +249,9 @@ class OuterShell extends React.Component{
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-left');
       this.map.addControl(new mapboxgl.ScaleControl({maxWidth: 80}),'bottom-left');
 
-      let layerlist = ['ee-layer','districts']
-      this.addLayerSources(layerlist.slice());
+      let layerlist = ['districts']
+      this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
-
-
-      // this.addLayerSources(['ee-Layer','municipal_bounds','national_parks','other_authorizations',
-      //                       'tierras_de_com','resguardos','legal_mines']);
-
-      // this.flags.layeradded = true;
-      // const overlays = {
-      //   'ee-Layer': 'Prediction',
-      //   'municipal_bounds': 'Municipal Boundaries',
-      //   'legal_mines' : 'Legal mines',
-      //   'national_parks': 'National Parks',
-      //   'other_authorizations': 'Other Authorizations',
-      //   'tierras_de_com': 'Ethnic territories I',
-      //   'resguardos' : 'Ethnic territories II',
-      //   'mapbox-streets':'Mapbox Streets'
-      // }
-      // var opacity = new OpacityControl({
-      //   // baseLayers:baseLayers,
-      //   overLayers:overlays,
-      //   opacityControl:true
-      // })
-      // // this.map.addControl(opacity, 'bottom-right');
-      // this.getGEELayers(['municipal_bounds','national_parks','other_authorizations',
-      //                    'tierras_de_com','resguardos','legal_mines']);
 
       this.map.on('mousemove',(e)=>{
         var lat = Math.round(e.lngLat.lat*10000)/10000;
