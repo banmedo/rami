@@ -114,8 +114,22 @@ def getGEETiles(request):
     name = request.GET.get('name')
     print(name)
     if (name == "districts"):
-        table = ee.FeatureCollection('users/nk-sig/peru/bounds/Level2')
+        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Distritos')
         style = {'color':'#f66', 'fillColor':'#0000', 'width':1}
+    elif (name == "provinces"):
+        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Provincia')
+        style = {'color':'#f66', 'fillColor':'#0000', 'width':3}
+    elif (name == "forestconcessions"):
+        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Concesiones_Forestales')
+        style = {'color':'#2f2', 'fillColor':'#0000', 'width':1}
+    elif (name == "miningconcessions"):
+        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Concesiones_Mineras')
+        style = {'color':'#ff6', 'fillColor':'#0000', 'width':1}
+    elif (name == "indigenouslands"):
+        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Comunidad_Campesinas')\
+                  .merge(ee.FeatureCollection('users/nk-sig/rami/shapes/Comunidad_Nativa'))\
+                  .merge(ee.FeatureCollection('users/nk-sig/rami/shapes/Reservas_Indigenas'))
+        style = {'color':'#f7861b', 'fillColor':'#0000', 'width':1}
     layer = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
     mapid = ee.data.getTileUrl(layer.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
     return JsonResponse({'url':mapid,'style':style})

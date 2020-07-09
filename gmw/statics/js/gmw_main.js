@@ -249,7 +249,8 @@ class OuterShell extends React.Component{
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-left');
       this.map.addControl(new mapboxgl.ScaleControl({maxWidth: 80}),'bottom-left');
 
-      let layerlist = ['districts']
+      let layerlist = ['districts','provinces','forestconcessions','miningconcessions',
+                       'indigenouslands']
       this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
 
@@ -320,12 +321,12 @@ class OuterShell extends React.Component{
         </button>
         {(this.state.showSelectLayers)?
           <div className="col-sm-12" style={{padding:0}}>
-            {this.getSwitch("Region Boundary")}
+            {this.getSwitch("Region Boundary",'provinces')}
             {this.getSwitch("District Boundary",'districts')}
             {this.getSwitch("Protected Areas")}
-            {this.getSwitch("Indigenous Lands Boundary")}
-            {this.getSwitch("Forest Management Concessions")}
-            {this.getSwitch("Mining Concessions")}
+            {this.getSwitch("Indigenous Lands Boundary",'indigenouslands')}
+            {this.getSwitch("Forest Management Concessions","forestconcessions")}
+            {this.getSwitch("Mining Concessions","miningconcessions")}
           </div>
           :""}
         <button className={(this.state.showMineLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
