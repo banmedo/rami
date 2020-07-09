@@ -311,7 +311,7 @@ class OuterShell extends React.Component{
       <div className='sidebar' >
         <div className='gold-drop app-icon'></div>
         <button className='col-sm-12 sidebar-icon'
-                onClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}>
+                onClick={((e) => this.setState({appinfohidden : !this.state.appinfohidden})).bind(this)}>
                   Methodology & Publications
         </button>
         <button className={(this.state.showSelectLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
@@ -319,7 +319,7 @@ class OuterShell extends React.Component{
                   Boundaries
         </button>
         {(this.state.showSelectLayers)?
-          <div className="col-sm-12">
+          <div className="col-sm-12" style={{padding:0}}>
             {this.getSwitch("Region Boundary")}
             {this.getSwitch("District Boundary",'districts')}
             {this.getSwitch("Protected Areas")}
@@ -333,7 +333,7 @@ class OuterShell extends React.Component{
                   Mine Layers
         </button>
         {(this.state.showMineLayers)?
-          <div className="col-sm-12">
+          <div className="col-sm-12" style={{padding:0}}>
             {this.getSwitch("Mine Alerts (accumulated)", 'ee-Layer')}
             {this.getSwitch("Historical Mining Data")}
             {this.getSwitch("Illegal Mining (Protected Areas/Ind. Territories")}
@@ -374,7 +374,7 @@ class OuterShell extends React.Component{
           tooltip='Download'/>
 
       </div>
-      <AppInfo ishidden={this.state.appinfohidden} onOuterClick={((e) => this.togglePanel(e, 'appinfohidden')).bind(this)}/>
+      <AppInfo ishidden={this.state.appinfohidden} onOuterClick={((e) => this.setState({appinfohidden : !this.state.appinfohidden})).bind(this)}/>
       <div id="lng-lat-hud">
       </div>
     </div>
