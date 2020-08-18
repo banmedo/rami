@@ -41,6 +41,10 @@ class OuterShell extends React.Component{
   // combining everything to app state
   state = {...this.appparams, ...this.appstates, ...this.persistentstates}
 
+  interactionMode = "none"
+  rulergjson = {}
+  activeLayers = []
+
   constructor(props){
     super(props)
   }
@@ -215,9 +219,10 @@ class OuterShell extends React.Component{
       regionSelected:[level,name]
     });
   }
-
   
   triggerLayer(layername, state){
+    if (state) this.activeLayers.push(layername)
+    else this.activeLayers.splice(this.activeLayers.indexOf(layername),1)
     this.map.setLayoutProperty(layername,'visibility',(state?'visible':'none'));
   }
 
@@ -235,6 +240,82 @@ class OuterShell extends React.Component{
     (this.state.displayBox==val)?this.setState({displayBox:false}):this.setState({displayBox:val});
   }
 
+  resetInteractionMode(map){
+    // clear map
+    try{
+      this.map.getCanvas().style.cursor = 'grab';
+      map.removeLayer('measure-points');
+      map.removeLayer('measure-lines');
+      map.removeSource('geojson');
+    }catch(err){console.log("can't clean map")}
+    this.rulergjson = this.getBlankGeojson();
+
+    if (this.interactionMode == 'ruler'){
+      this.addBlankRulerLayer(map);
+    }
+  }
+
+  addControls(map){
+    const ruler = new MapboxGLButtonControl({
+      className: "glyphicon glyphicon-link",
+      title: "Ruler",
+      eventHandler: (e) => { 
+        this.interactionMode = (this.interactionMode == "ruler")?"none":"ruler";
+        this.resetInteractionMode(map);
+      }
+    });
+    map.addControl(ruler, "top-left");
+  }
+
+  // function to get empty gjson layer
+  getBlankGeojson(){
+    return {
+      'type': 'FeatureCollection',
+      'features' : []
+    }
+  }
+  getBlankLine(){
+    return {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': []
+      }
+    }
+  }
+  addBlankRulerLayer(map){
+    // add layer for ruler
+    map.addSource('geojson', {
+      'type': 'geojson',
+      'data': this.rulergjson
+    });
+    // Add styles to the map
+    map.addLayer({
+      id: 'measure-points',
+      type: 'circle',
+      source: 'geojson',
+      paint: {
+        'circle-radius': 5,
+        'circle-color': '#FF0'
+      },
+      filter: ['in', '$type', 'Point']
+    });
+    map.addLayer({
+      id: 'measure-lines',
+      type: 'line',
+      source: 'geojson',
+      layout: {
+        'line-cap': 'round',
+        'line-join': 'round'
+      },
+      paint: {
+        'line-color': '#FF0',
+        'line-width': 2.5
+      },
+      filter: ['in', '$type', 'LineString']
+    });
+  }
+
   // set up parameters after components are mounted
   componentDidMount(){
     // render maps
@@ -248,6 +329,7 @@ class OuterShell extends React.Component{
     this.map.on('load', (e) => {
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-left');
       this.map.addControl(new mapboxgl.ScaleControl({maxWidth: 80}),'bottom-left');
+      this.addControls(this.map);
 
       let layerlist = ['districts','provinces','forestconcessions','miningconcessions',
                        'indigenouslands']
@@ -255,15 +337,63 @@ class OuterShell extends React.Component{
       this.getGEELayers(layerlist.slice());
 
       this.map.on('mousemove',(e)=>{
-        var lat = Math.round(e.lngLat.lat*10000)/10000;
-        var lng = Math.round(e.lngLat.lng*10000)/10000;
         var hud = document.getElementById('lng-lat-hud');
-        hud.style.display = 'inherit';
-        hud.innerHTML = [lat,lng].join(', ');
+        if (this.interactionMode == "none"){
+          var lat = Math.round(e.lngLat.lat*10000)/10000;
+          var lng = Math.round(e.lngLat.lng*10000)/10000;
+          hud.style.display = 'inherit';
+          hud.innerHTML = [lat,lng].join(', ');
+        } else if (this.interactionMode == "ruler") {
+          var features = this.map.queryRenderedFeatures(e.point, {
+            layers: ['measure-points']
+          });
+          this.map.getCanvas().style.cursor = features.length ? 'pointer' : 'crosshair';
+        }
       })
       this.map.on('mouseout',(e)=>{
         var hud = document.getElementById('lng-lat-hud');
-        hud.style.display = 'none';
+        if (this.interactionMode == "none") hud.style.display = 'none';
+      })
+      this.map.on('click',(e)=>{
+        let map = this.map;
+        if (this.interactionMode == "ruler"){
+          var hud = document.getElementById('lng-lat-hud');
+          hud.style.display = 'none';
+          var features = map.queryRenderedFeatures(e.point, {
+            layers: ['measure-points']
+          });
+          if (this.rulergjson.features.length > 1) this.rulergjson.features.pop();
+          hud.innerHTML = ''
+          if (features.length) {
+            var id = features[0].properties.id;
+            this.rulergjson.features = this.rulergjson.features.filter(function(point) {
+              return point.properties.id !== id;
+            });
+          } else {
+            var point = {
+              'type': 'Feature',
+              'geometry': {
+                'type': 'Point',
+                'coordinates': [e.lngLat.lng, e.lngLat.lat]
+              },
+              'properties': {
+                'id': String(new Date().getTime())
+              }
+            }; 
+            this.rulergjson.features.push(point);
+          }
+          if (this.rulergjson.features.length > 1) {
+            let linestring = this.getBlankLine()
+            linestring.geometry.coordinates = this.rulergjson.features.map((point)=>{
+              return point.geometry.coordinates;
+            });
+            this.rulergjson.features.push(linestring);
+            let value ='Total distance: ' +turf.length(linestring).toLocaleString() +'km';
+            hud.style.display = 'inherit';
+            hud.innerHTML = value;
+          }
+          map.getSource('geojson').setData(this.rulergjson);
+        }
       })
     });
 
