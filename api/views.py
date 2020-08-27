@@ -112,7 +112,6 @@ def getMunicipalLayer(request):
 
 def getGEETiles(request):
     name = request.GET.get('name')
-    print(name)
     if (name == "districts"):
         table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Distritos')
         style = {'color':'#f66', 'fillColor':'#0000', 'width':1}
@@ -215,3 +214,22 @@ def getAreaPredictedTS(request):
         except Exception as e:
             print(e)
             return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)
+
+def getInfo(request):
+    try:
+        lat = float(request.GET.get('lat'))
+        lng = float(request.GET.get('lon'))
+        image = request.GET.get('image')
+        authGEE()
+        image = ee.Image(IMAGE_REPO+'/'+image)
+        pt = image.sampleRegions(ee.Feature(ee.Geometry.Point(lng,lat)))
+        print(pt)
+        size = pt.size().getInfo()
+        if (size > 0):
+            val = pt.first().get('b1').getInfo()
+            return JsonResponse({'action':'Success','value':val})
+        else :
+            return JsonResponse({'action':'Error','message':'No data available for the point!'},status=500)
+    except Exception as e:
+        print(e)
+        return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)

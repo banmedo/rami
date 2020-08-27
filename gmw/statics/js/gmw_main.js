@@ -14,7 +14,8 @@ class OuterShell extends React.Component{
     COMPOSITE_IMAGE: '/api/getcompositeimage',
     LEGAL_MINES: 'api/getlegalmines',
     GEE_LAYER: 'api/getgeetiles',
-    MUNS: 'api/getmunicipallayer'
+    MUNS: 'api/getmunicipallayer',
+    INFO: 'api/getinfo'
   }
   // overall app parameters
   appparams = {
@@ -29,6 +30,7 @@ class OuterShell extends React.Component{
     showSelectLayers:true,
     showMineLayers:false,
     displayBox:false,
+    activeLayers:[]
   }
   persistentstates = {
     showcomposite:false,
@@ -43,7 +45,7 @@ class OuterShell extends React.Component{
 
   interactionMode = "none"
   rulergjson = {}
-  activeLayers = []
+  layerstyles = {}
 
   constructor(props){
     super(props)
@@ -221,8 +223,10 @@ class OuterShell extends React.Component{
   }
   
   triggerLayer(layername, state){
-    if (state) this.activeLayers.push(layername)
-    else this.activeLayers.splice(this.activeLayers.indexOf(layername),1)
+    let currentlist = [...this.state.activeLayers];
+    if (state) currentlist.push(layername);
+    else currentlist.splice(currentlist.indexOf(layername),1);
+    this.setState({activeLayers:currentlist});
     this.map.setLayoutProperty(layername,'visibility',(state?'visible':'none'));
   }
 
@@ -257,14 +261,23 @@ class OuterShell extends React.Component{
 
   addControls(map){
     const ruler = new MapboxGLButtonControl({
-      className: "glyphicon glyphicon-link",
+      className: "glyphicon glyphicon-flag",
       title: "Ruler",
       eventHandler: (e) => { 
         this.interactionMode = (this.interactionMode == "ruler")?"none":"ruler";
         this.resetInteractionMode(map);
       }
     });
+    const info = new MapboxGLButtonControl({
+      className: "glyphicon glyphicon-info-sign",
+      title: "Info",
+      eventHandler: (e) => { 
+        this.interactionMode = (this.interactionMode == "info")?"none":"info";
+        this.resetInteractionMode(map);
+      }
+    });
     map.addControl(ruler, "top-left");
+    map.addControl(info, "top-left");
   }
 
   // function to get empty gjson layer
@@ -348,6 +361,8 @@ class OuterShell extends React.Component{
             layers: ['measure-points']
           });
           this.map.getCanvas().style.cursor = features.length ? 'pointer' : 'crosshair';
+        } else if (this.interactionMode == 'info'){
+          this.map.getCanvas().style.cursor = 'help'
         }
       })
       this.map.on('mouseout',(e)=>{
@@ -393,6 +408,24 @@ class OuterShell extends React.Component{
             hud.innerHTML = value;
           }
           map.getSource('geojson').setData(this.rulergjson);
+        } else if (this.interactionMode == 'info'){
+          let lat = e.lngLat.lat, lng = e.lngLat.lng;
+          fetch(this.URLS.INFO+"?lat="+e.lngLat.lat+"&lon="+e.lngLat.lng+"&image="+this.state.selectedDate)
+            .then(resp => resp.json())  
+            .then((resp) => {
+              let ln = Math.ceil(lng*10000)/10000;
+              let lt = Math.ceil(lat*10000)/10000;
+              let innerHTML = '';
+              if (resp.action == 'Error'){
+                innerHTML = `<b>${lt},${ln}</b>: ${resp.message}`;
+              } else{
+                innerHTML = `<b>${lt},${ln}</b>: ${resp.value}`;
+              }
+              var popup = new mapboxgl.Popup({ closeOnClick: false })
+                              .setLngLat([lng, lat])
+                              .setHTML(innerHTML)
+                              .addTo(this.map);
+            });
         }
       })
     });
@@ -453,7 +486,7 @@ class OuterShell extends React.Component{
           <div className="col-sm-12" style={{padding:0}}>
             {this.getSwitch("Region Boundary",'provinces')}
             {this.getSwitch("District Boundary",'districts')}
-            {this.getSwitch("Protected Areas")}
+            {/* {this.getSwitch("Protected Areas")} */}
             {this.getSwitch("Indigenous Lands Boundary",'indigenouslands')}
             {this.getSwitch("Forest Management Concessions","forestconcessions")}
             {this.getSwitch("Mining Concessions","miningconcessions")}
@@ -466,9 +499,9 @@ class OuterShell extends React.Component{
         {(this.state.showMineLayers)?
           <div className="col-sm-12" style={{padding:0}}>
             {this.getSwitch("Mine Alerts (accumulated)", 'ee-Layer')}
-            {this.getSwitch("Historical Mining Data")}
-            {this.getSwitch("Illegal Mining (Protected Areas/Ind. Territories")}
-            {this.getSwitch("Mining in Concessions")}
+            {/* {this.getSwitch("Historical Mining Data")} */}
+            {/* {this.getSwitch("Illegal Mining (Protected Areas/Ind. Territories")} */}
+            {/* {this.getSwitch("Mining in Concessions")} */}
           </div>
           :""}
       </div>
@@ -506,6 +539,7 @@ class OuterShell extends React.Component{
 
       </div>
       <AppInfo ishidden={this.state.appinfohidden} onOuterClick={((e) => this.setState({appinfohidden : !this.state.appinfohidden})).bind(this)}/>
+      <Legend activeLayers={this.state.activeLayers}/>
       <div id="lng-lat-hud">
       </div>
     </div>
