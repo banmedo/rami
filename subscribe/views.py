@@ -100,24 +100,44 @@ def downloadData(request):
     if not(user.is_authenticated):
         return requestLogin(request)
     else:
+        return render(request, 'dlData.html')
+
+def downloadAllInCSV(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
         from subscribe.models import ExtractedData
         from accounts.models import Profile
-        data = ExtractedData.objects.all().values()
+        date = request.GET.get('date')
+        data = ExtractedData.objects.filter(data_date__startswith=date).values()
         user = Profile.objects.get(user=user)
         d = []
         for point in iter(data):
             try:
                 prof = Profile.objects.get(user=point['user_id'])
-                id = prof.user
+                id = str(prof.user)
             except Exception as e:
                 id = 'N/A'
             temp = {}
-            temp['id'] = prof.user
+            temp['id'] = id
             temp['y'] = point['y']
             temp['x'] = point['x']
-            temp['data_date'] = point['data_date']
-            temp['class_num'] = point['class_num']
-            temp['class_name'] = point['class_name']
+            temp['dataDate'] = point['data_date']
+            temp['classNum'] = point['class_num']
+            temp['className'] = point['class_name']
             d.append(temp)
         context = {'data':d}
-        return render(request, 'dlData.html', context)
+        return JsonResponse(d, safe=False)
+
+def getDataDates(request):
+    user = request.user
+    if not(user.is_authenticated):
+        return requestLogin(request)
+    else:
+        from subscribe.models import ExtractedData
+        data = ExtractedData.objects.order_by().values_list('data_date',flat=True).distinct()
+        list = []
+        for d in data:
+            list.append(d)
+        return JsonResponse(list, safe=False)

@@ -344,7 +344,7 @@ class OuterShell extends React.Component{
       this.map.addControl(new mapboxgl.ScaleControl({maxWidth: 80}),'bottom-left');
       this.addControls(this.map);
 
-      let layerlist = ['districts','provinces','forestconcessions','miningconcessions',
+      let layerlist = ['districts','municipalities','forestconcessions','miningconcessions',
                        'indigenouslands']
       this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
@@ -439,7 +439,7 @@ class OuterShell extends React.Component{
   render(){
     return <div className='shell' {...this.props}>
       <div ref={el => this.mapContainer = el}></div>
-      {/* {(this.state.displayBox=="Filter")?
+      {(this.state.displayBox=="Filter")?
         <SliderPanel
           imageUpdated = {this.imageUpdated.bind(this)}
           oncheckchange = {((e) => this.setState({showcomposite:!this.state.showcomposite})).bind(this)}
@@ -450,7 +450,7 @@ class OuterShell extends React.Component{
           maxDate = {this.state.maxDate}
           minDate = {this.state.minDate}
           dateSliderUpdated = {this.dateSliderUpdated.bind(this)}
-          imageDates = {this.state.imageDates}/>:""} */}
+          imageDates = {this.state.imageDates}/>:""}
       {(this.state.displayBox=="Download")?
         <DownloadPanel
           regionSelected = {this.state.regionSelected}
@@ -484,8 +484,8 @@ class OuterShell extends React.Component{
         </button>
         {(this.state.showSelectLayers)?
           <div className="col-sm-12" style={{padding:0}}>
-            {this.getSwitch("Region Boundary",'provinces')}
             {this.getSwitch("District Boundary",'districts')}
+            {this.getSwitch("Municipal Boundary",'municipalities')}
             {/* {this.getSwitch("Protected Areas")} */}
             {this.getSwitch("Indigenous Lands Boundary",'indigenouslands')}
             {this.getSwitch("Forest Management Concessions","forestconcessions")}
@@ -521,11 +521,11 @@ class OuterShell extends React.Component{
           glyphicon='glyphicon-stats'
           clickhandler={((e) => this.setDisplayBox('Stats')).bind(this)}
           tooltip='Stats'/>
-        {/* <SmartIcons
+        <SmartIcons
           parentclass={this.state.displayBox=='Filter'?'active-icon':''}
           glyphicon='glyphicon-filter'
           clickhandler={((e) => this.setDisplayBox('Filter')).bind(this)}
-          tooltip='Filter Image'/> */}
+          tooltip='Filter Image'/>
         <SmartIcons
           parentclass={this.state.displayBox=='Search'?'active-icon':''}
           glyphicon='glyphicon-search'

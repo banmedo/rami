@@ -8,7 +8,7 @@ from api.config import *
 #function to authenticate GEE
 def authGEE():
     module_dir = os.path.dirname(__file__)
-    service_account = 'comimo@earth-engine-comimo.iam.gserviceaccount.com'
+    service_account = 'gee-auth@earthengine-228009.iam.gserviceaccount.com'
     credentials = ee.ServiceAccountCredentials(service_account, os.path.join(module_dir,'gee-auth-key.json'))
     ee.Initialize(credentials)
     # ee.Initialize()
@@ -63,7 +63,6 @@ def reduceRegion(shapeObj,raster):
     polygon = ee.Geometry.MultiPolygon(shapeObj['coordinates']);
     value = raster.reduceRegion(ee.Reducer.sum(), polygon, 30, bestEffort = True)
     return value.getInfo()['b1']>0
-
 
 def getDefaultStyled(img):
     img = img.select(0).selfMask()

@@ -55,9 +55,9 @@ class SliderPanel extends React.Component{
     </div>
     return <div className='popup-container' style={{minHeight:'100px'}}>
       <h3><b>FILTER DATA</b></h3>
-      <input type="checkbox" className="form-check-input" id="showcomposite" onChange={this.props.oncheckchange} defaultChecked={this.props.showcomposite}/>
+      {/* <input type="checkbox" className="form-check-input" id="showcomposite" onChange={this.props.oncheckchange} defaultChecked={this.props.showcomposite}/>
       &nbsp;Show Composite <br/>
-      <small className="form-text text-muted">time series agreement (%)</small>
+      <small className="form-text text-muted">time series agreement (%)</small> */}
       {singledate}
       {range}
       <div style={{'textAlign':'center','width':'100%'}}>

@@ -49,11 +49,11 @@ def getFeatureNames(request):
     # dict = {}
     # l2list = []
     # for feat in level2:
-    #     l1name = feat['properties']['DPTO_CNMBR']
+    #     l1name = feat['properties']['ADM1_ES']
     #     if l1name in dict:
-    #         dict[l1name][feat['properties']['MPIO_CNMBR']] = bounds(feat)
+    #         dict[l1name][feat['properties']['ADM2_ES']] = bounds(feat)
     #     else:
-    #         dict[l1name] = {feat['properties']['MPIO_CNMBR'] : bounds(feat)}
+    #         dict[l1name] = {feat['properties']['ADM2_ES'] : bounds(feat)}
     # return JsonResponse({'action':'FeatureNames', 'features': dict});
 
 # get features in a cascading pattern
@@ -112,10 +112,10 @@ def getMunicipalLayer(request):
 
 def getGEETiles(request):
     name = request.GET.get('name')
-    if (name == "districts"):
+    if (name == "municipalities"):
         table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Distritos')
         style = {'color':'#f66', 'fillColor':'#0000', 'width':1}
-    elif (name == "provinces"):
+    elif (name == "districts"):
         table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Provincia')
         style = {'color':'#f66', 'fillColor':'#0000', 'width':3}
     elif (name == "forestconcessions"):
@@ -144,7 +144,10 @@ def getDownloadURL(request):
         if (region == 'all'):
             region = ee.FeatureCollection(LEVELS['l0'])
         else:
-            region = ee.FeatureCollection(LEVELS[level]).filter(ee.Filter.eq(FIELDS[level],region))
+            l1, l2 = region.split("_");
+            region = ee.FeatureCollection(LEVELS[level])\
+                        .filter(ee.Filter.eq(FIELDS['mun_l1'],l1.upper()))\
+                        .filter(ee.Filter.eq(FIELDS['mun'],l2.upper()))
         img = img.clip(region)
         url = img.toByte().getDownloadURL({})
         return JsonResponse({'action':'success', 'url':url})

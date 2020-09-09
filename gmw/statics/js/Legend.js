@@ -1,8 +1,8 @@
 class Legend extends React.Component{
 
     palette = {
-        districts: ['#f66','#000',1],
-        provinces: ['#f66','#0000',3],
+        municipalities: ['#f66','#000',1],
+        districts: ['#f66','#0000',3],
         forestconcessions: ['#2f2',"#0000",1],
         miningconcessions: ["#ff6","#0000",1],
         indigenouslands: ["#f7861b", "#0000",1],
@@ -11,7 +11,7 @@ class Legend extends React.Component{
 
     names = {
         districts: 'District Boundary',
-        provinces: 'Region Boundary',
+        municipalities: 'Municipal Boundary',
         forestconcessions: 'Forest Management Concessions',
         miningconcessions: 'Mining Concessions',
         indigenouslands: 'Indigenous Lands',
@@ -20,7 +20,7 @@ class Legend extends React.Component{
 
     getLegendEntry = (layer) => {
         let palet = this.palette[layer];
-        return <div style={{width:'100%',padding:'1px 3px'}}>
+        return <div key={layer} style={{width:'100%',padding:'1px 3px'}}>
             <div style={{height:'10px',
                          width:'10px',
                          border:['solid',palet[2]+'px',palet[0]].join(' '),
