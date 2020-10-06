@@ -6,39 +6,55 @@
 
 <body>
 {% block content %}
-  <div class='wrapper'>
-    <div style="padding:30px">
-      <h2>Sign up</h2>
-      <form method="post">
-        {% csrf_token %}
-        {% for field in form %}
-          <p>
-            {{ field.label_tag }}<br>
-            {{ field }}
-            {% if field.help_text %}
-              <small style="color: grey">{{ field.help_text }}</small>
-            {% endif %}
-            {% for error in field.errors %}
-              <p style="color: red">{{ error }}</p>
-            {% endfor %}
-          </p>
-        {% endfor %}
-        <button type="submit" class="btn btn-primary">Sign up</button>
-      </form>
+  <div class="shell">
+    <div class='wrapper'>
+      <div style="padding:30px">
+        <h2>Sign up</h2>
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+            <p>
+              {{ field.label_tag }}<br>
+              {{ field }}
+              {% if field.help_text %}
+                <small style="color: #dadada">{{ field.help_text }}</small>
+              {% endif %}
+              {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+              {% endfor %}
+            </p>
+          {% endfor %}
+          <button type="submit" class="btn btn-primary">Sign up</button>
+        </form>
+      </div>
     </div>
-
   </div>
   {% endblock %}
 </body>
 
 {% block pagestyles %}
 <style>
+  body{
+    background: url("/static/images/mine_bg_pic1.jpg"), rgb(0,0,0,0.75);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: multiply;
+  }
+  .shell{
+    width:100%;
+    height:100%;
+    overflow-y: auto;
+  }
   .wrapper{
-    background:#faff3b9c;
-    /* width:1000px; */
+    background:#6B376E9C;
+    color:white;
     padding:0px 50px 50px 50px;
-    margin:auto;
     box-shadow:2px 2px 0px 1px rgba(0,0,0,.1);
+    max-width:100%;
+    float:right;
+  }
+  input{
+    color:black;
   }
 </style>
 {% endblock %}

@@ -21,14 +21,24 @@
 
 {% block pagestyles %}
 <style>
+  body{
+    background: url("/static/images/mine_bg_pic1.jpg"), rgb(0,0,0,0.75);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-blend-mode: multiply;
+  }
   .wrapper{
-    background:#faff3b9c;
+    background:#6B376E9C;
+    color:white;
     width:400px;
     padding:50px;
     margin:auto;
     margin-top:100px;
     text-align:center;
     box-shadow:2px 2px 0px 1px rgba(0,0,0,.1);
+  }
+  input{
+    color:black;
   }
 </style>
 {% endblock %}
