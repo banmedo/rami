@@ -59,7 +59,7 @@ class SliderPanel extends React.Component{
       &nbsp;Show Composite <br/>
       <small className="form-text text-muted">time series agreement (%)</small> */}
       {singledate}
-      {range}
+      {/* {range} */}
       <div style={{'textAlign':'center','width':'100%'}}>
         <button type="button" className="btn btn-warning map-upd-btn" onClick={this.props.imageUpdated}>Update Map</button>
       </div>

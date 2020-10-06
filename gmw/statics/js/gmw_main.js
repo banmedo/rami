@@ -28,7 +28,7 @@ class OuterShell extends React.Component{
   appstates = {
     appinfohidden:true,
     showSelectLayers:true,
-    showMineLayers:false,
+    showMineLayers:true,
     displayBox:false,
     activeLayers:[]
   }
@@ -334,9 +334,9 @@ class OuterShell extends React.Component{
     // render maps
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/dark-v9',
-      center: [-75.5609339,-10],
-      zoom: 5
+      style: 'mapbox://styles/mapbox/light-v9',
+      center: [-69.57, -12.85],
+      zoom: 9
     });
 
     this.map.on('load', (e) => {
@@ -484,8 +484,8 @@ class OuterShell extends React.Component{
         </button>
         {(this.state.showSelectLayers)?
           <div className="col-sm-12" style={{padding:0}}>
-            {this.getSwitch("District Boundary",'districts')}
-            {this.getSwitch("Municipal Boundary",'municipalities')}
+            {this.getSwitch("Province Boundary",'districts')}
+            {this.getSwitch("District Boundary",'municipalities')}
             {/* {this.getSwitch("Protected Areas")} */}
             {this.getSwitch("Indigenous Lands Boundary",'indigenouslands')}
             {this.getSwitch("Forest Management Concessions","forestconcessions")}

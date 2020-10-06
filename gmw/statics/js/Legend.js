@@ -6,12 +6,12 @@ class Legend extends React.Component{
         forestconcessions: ['#2f2',"#0000",1],
         miningconcessions: ["#ff6","#0000",1],
         indigenouslands: ["#f7861b", "#0000",1],
-        'ee-Layer': ['#f00','#0000',1]
+        'ee-Layer': ['#f00','#f00',1]
     }
 
     names = {
-        districts: 'District Boundary',
-        municipalities: 'Municipal Boundary',
+        districts: 'Province Boundary',
+        municipalities: 'District Boundary',
         forestconcessions: 'Forest Management Concessions',
         miningconcessions: 'Mining Concessions',
         indigenouslands: 'Indigenous Lands',

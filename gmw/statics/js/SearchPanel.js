@@ -98,7 +98,7 @@ class SearchPanel extends React.Component{
         </option>);
       });
       selectl1 = <div className="w_100">
-        <small>District</small>
+        <small>Province</small>
         <select className='w_100' defaultValue={0} onChange={this.stateSelected.bind(this)}>
           {selectl1options}
         </select>
@@ -114,7 +114,7 @@ class SearchPanel extends React.Component{
         </option>)
       });
       selectl2 = <div className="w_100">
-        <small>Municipality</small>
+        <small>District</small>
         <select className='w_100' defaultValue={0} onChange={(e) => {
             console.log(this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'))
               this.munSelected(e,this.props.pointmapto);
@@ -134,7 +134,7 @@ class SearchPanel extends React.Component{
       {gsearchul}
       <b>Lat Long Search</b>
       <input className='w_100' onKeyUp={(e) => {this.latlngChanged(e,this.props.pointmapto)}} />
-      <b>Select Municipality</b><br/>
+      <b>Select District</b><br/>
       {selectl1}
       {selectl2}
     </div>
