@@ -5,6 +5,7 @@ class Legend extends React.Component{
         districts: ['#f66','#0000',3],
         forestconcessions: ['#2f2',"#0000",1],
         miningconcessions: ["#ff6","#0000",1],
+        protectedareas:["#009b2f", "#009b2f99",1],
         indigenouslands: ["#f7861b", "#0000",1],
         'ee-Layer': ['#f00','#f00',1]
     }
@@ -14,6 +15,7 @@ class Legend extends React.Component{
         municipalities: 'District Boundary',
         forestconcessions: 'Forest Management Concessions',
         miningconcessions: 'Mining Concessions',
+        protectedareas: 'Protected Areas',
         indigenouslands: 'Indigenous Lands',
         'ee-Layer': 'Predicted Mines'
     }

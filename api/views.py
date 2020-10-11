@@ -124,6 +124,9 @@ def getGEETiles(request):
     elif (name == "miningconcessions"):
         table = ee.FeatureCollection('users/nk-sig/rami/shapes/Concesiones_Mineras')
         style = {'color':'#ff6', 'fillColor':'#0000', 'width':1}
+    elif (name == "protectedareas"):
+        table = ee.FeatureCollection("WCMC/WDPA/current/polygons").filterMetadata('SUB_LOC','contains','PE')
+        style = {"color":'009b2f', "fillColor":"009b2f99","width":1}
     elif (name == "indigenouslands"):
         table = ee.FeatureCollection('users/nk-sig/rami/shapes/Comunidad_Campesinas')\
                   .merge(ee.FeatureCollection('users/nk-sig/rami/shapes/Comunidad_Nativa'))\

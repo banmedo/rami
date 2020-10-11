@@ -345,7 +345,7 @@ class OuterShell extends React.Component{
       this.addControls(this.map);
 
       let layerlist = ['districts','municipalities','forestconcessions','miningconcessions',
-                       'indigenouslands']
+                       'protectedareas','indigenouslands']
       this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
 
@@ -486,9 +486,9 @@ class OuterShell extends React.Component{
           <div className="col-sm-12" style={{padding:0}}>
             {this.getSwitch("Province Boundary",'districts')}
             {this.getSwitch("District Boundary",'municipalities')}
-            {/* {this.getSwitch("Protected Areas")} */}
             {this.getSwitch("Indigenous Lands Boundary",'indigenouslands')}
             {this.getSwitch("Forest Management Concessions","forestconcessions")}
+            {this.getSwitch("Protected Areas","protectedareas")}
             {this.getSwitch("Mining Concessions","miningconcessions")}
           </div>
           :""}
