@@ -87,8 +87,10 @@ def subscribedRegionsToFC(regions):
 def getPointsWithin(regions,date):
     fc = subscribedRegionsToFC(regions)
     try:
-        points = ee.FeatureCollection(POINTS_FOL+'/'+date.strftime("%Y-%m-%d"))
-        return points.filterBounds(fc)
+        # points = ee.FeatureCollection(POINTS_FOL+'/'+date.strftime("%Y-%m-%d"))
+        image = ee.Image(IMAGE_REPO+'/'+date.strftime("%Y-%m-%d"))
+        strat = image.stratifiedSample(numPoints=20,region=fc.geometry(),scale=10,geometries=True)
+        return strat
     except Exception as e:
         print(e)
     # points = ee.FeatureCollection(POINTS_FOL+'/'+date.strftime("%Y-%m-%d"))

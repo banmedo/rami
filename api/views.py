@@ -44,7 +44,6 @@ def getFeatureNames(request):
     f = open(os.path.join(module_dir,'shapes','featureNames.json'),'r').read()
     return JsonResponse(json.loads(f))
 
-
     # level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
     # dict = {}
     # l2list = []
@@ -54,13 +53,13 @@ def getFeatureNames(request):
     #         dict[l1name][feat['properties']['ADM2_ES']] = bounds(feat)
     #     else:
     #         dict[l1name] = {feat['properties']['ADM2_ES'] : bounds(feat)}
-    # return JsonResponse({'action':'FeatureNames', 'features': dict});
+    # return JsonResponse({'action':'FeatureNames', 'features': dict})
 
 # get features in a cascading pattern
 def getCascadingFeatureNames(request):
     authGEE()
     fc = ee.FeatureCollection(MUNICIPAL_BOUNDS)
-    fclist = fc.toList(fc.size());
+    fclist = fc.toList(fc.size())
 
     def getCascadingList(feature, passedObject):
         passedObject = ee.Dictionary(passedObject)
@@ -71,7 +70,7 @@ def getCascadingFeatureNames(request):
         list = ee.Algorithms.If(subset,ee.List(subset).add(l2),[l2])
         return passedObject.set(l1,list)
 
-    fci = fclist.iterate(getCascadingList, {});
+    fci = fclist.iterate(getCascadingList, {})
 
     return JsonResponse(fci.getInfo())
 

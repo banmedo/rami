@@ -38,7 +38,7 @@ class SelectRegion extends React.Component{
     var sell2 = '';
     if (this.state.l1name){
       var l2 = [];
-      l2.push(<option key={0} value={false} disabled>Select a Municipality</option>)
+      l2.push(<option key={0} value={false} disabled>Select a District</option>)
       this.state.l2names[this.state.l1name].forEach((item, i) => {
         l2.push(<option key={i+1} value={item}>{item}</option>)
       });
@@ -49,7 +49,7 @@ class SelectRegion extends React.Component{
     return <div className={['popup-container ',this.props.ishidden?'see-through':''].join(' ')} style={{'top':'0px'}}>
       <b>SELECT REGION OF INTEREST</b><br/>
       <input type="radio" value="mun"/> <b>Municipality</b><br/>
-      Colombia <br/>
+      Peru <br/>
       <select className='select-l1 w_100' id='selectl1' onChange={this.updateL1Selection.bind(this)}>
         {l1}
       </select><br/>

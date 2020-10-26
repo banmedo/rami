@@ -222,11 +222,29 @@ class OuterShell extends React.Component{
     });
   }
   
+  toggleBaseSatellite(checked){
+    window.m = this.map
+    // console.log(this.layerstyles)
+    // console.log(this.state.activeLayers)
+    let cstyle = this.map.getStyle();
+    console.log(cstyle.layers)
+    console.log(cstyle.sources)
+    var pref = "mapbox://styles/mapbox/"
+    var layer = checked?"satellite-v9":"light-v10";
+    console.log(pref+layer)
+    this.map.setStyle(pref+layer)
+    cstyle = this.map.getStyle();
+    console.log(cstyle.layers)
+    console.log(cstyle.sources)
+  }
+
   triggerLayer(layername, state){
-    let currentlist = [...this.state.activeLayers];
-    if (state) currentlist.push(layername);
-    else currentlist.splice(currentlist.indexOf(layername),1);
-    this.setState({activeLayers:currentlist});
+    if (layername != "satellite") {
+      let currentlist = [...this.state.activeLayers];
+      if (state) currentlist.push(layername);
+      else currentlist.splice(currentlist.indexOf(layername),1);
+      this.setState({activeLayers:currentlist});
+    }
     this.map.setLayoutProperty(layername,'visibility',(state?'visible':'none'));
   }
 
@@ -334,7 +352,7 @@ class OuterShell extends React.Component{
     // render maps
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
-      style: 'mapbox://styles/mapbox/light-v9',
+      style: 'mapbox://styles/mapbox/light-v10',
       center: [-69.57, -12.85],
       zoom: 9
     });
@@ -343,6 +361,15 @@ class OuterShell extends React.Component{
       this.map.addControl(new mapboxgl.NavigationControl({showCompass:false}),'top-left');
       this.map.addControl(new mapboxgl.ScaleControl({maxWidth: 80}),'bottom-left');
       this.addControls(this.map);
+
+      this.map.addLayer({
+        id    :'satellite',
+        source:{type    :'raster',
+                url     :"mapbox://mapbox.satellite",
+                tilesize:256},
+        type  :"raster",
+        layout:{visibility:'none'}
+      });
 
       let layerlist = ['districts','municipalities','forestconcessions','miningconcessions',
                        'protectedareas','indigenouslands']
@@ -478,6 +505,16 @@ class OuterShell extends React.Component{
                 onClick={((e) => this.setState({appinfohidden : !this.state.appinfohidden})).bind(this)}>
                   Methodology & Publications
         </button>
+        <div className="col-sm-12" style={{padding:0}}>
+          {/* <div className="sidebar-sub-icon w_100">
+            <div className = "sub-span">Satellite Layer</div>
+            <label className="switch">
+              <input type="checkbox" onChange={((e) => this.toggleBaseSatellite(e.target.checked)).bind(this)}/>
+              <span className="slider round"></span>
+            </label>
+          </div> */}
+          {this.getSwitch("Satellite Image","satellite")}
+        </div>
         <button className={(this.state.showSelectLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
                 onClick={((e) => this.setState({showSelectLayers : !this.state.showSelectLayers})).bind(this)}>
                   Boundaries

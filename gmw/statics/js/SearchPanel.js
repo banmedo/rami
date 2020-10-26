@@ -91,7 +91,7 @@ class SearchPanel extends React.Component{
     var selectl1='Loading ...', selectl2='';
     var l1names = Object.keys(this.props.featureNames).sort();
     if (l1names.length > 0){
-      var selectl1options = [<option key={-1} value={0} disabled>Select a District</option>];
+      var selectl1options = [<option key={-1} value={0} disabled>Select a Province</option>];
       l1names.forEach((item, i) => {
         selectl1options.push(<option key={i} value={item}>
           {item}
@@ -107,7 +107,7 @@ class SearchPanel extends React.Component{
     var l2objects = this.state.activeMuns;
     var l2names = Object.keys(l2objects).sort()
     if (l2names.length>0){
-      var selectl2options = [<option key={-1} value={0} disabled>Select a Municipality</option>];
+      var selectl2options = [<option key={-1} value={0} disabled>Select a District</option>];
       l2names.forEach((item, i) => {
         selectl2options.push(<option key={i} value={l2objects[item]} name={item}>
           {item}

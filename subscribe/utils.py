@@ -67,7 +67,6 @@ def saveProject(email, projurl, projid, data_date, name, regions):
         logging.getLogger("error").error(traceback.format_exc())
         return 'Error'
 
-
 def getSubscribedRegions(user):
     if (not isinstance(user, Profile)):
         user = Profile.objects.get(user=user)
