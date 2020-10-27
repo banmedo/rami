@@ -68,3 +68,7 @@ a{
 small{
   font-size:75% !important;
 }
+
+.justified-txt{
+  text-align:justify;
+}
