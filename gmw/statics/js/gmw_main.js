@@ -27,6 +27,7 @@ class OuterShell extends React.Component{
   // initial component states
   appstates = {
     appinfohidden:true,
+    showBaseLayers:true,
     showSelectLayers:true,
     showMineLayers:true,
     displayBox:false,
@@ -44,6 +45,7 @@ class OuterShell extends React.Component{
   state = {...this.appparams, ...this.appstates, ...this.persistentstates}
 
   interactionMode = "none"
+  excludeleg = ["satellite","s1composite","s2composite"] // layers to exclude from legend
   rulergjson = {}
   layerstyles = {}
 
@@ -239,7 +241,7 @@ class OuterShell extends React.Component{
   }
 
   triggerLayer(layername, state){
-    if (layername != "satellite") {
+    if (this.excludeleg.indexOf(layername) == -1) {
       let currentlist = [...this.state.activeLayers];
       if (state) currentlist.push(layername);
       else currentlist.splice(currentlist.indexOf(layername),1);
@@ -372,7 +374,7 @@ class OuterShell extends React.Component{
       });
 
       let layerlist = ['districts','municipalities','forestconcessions','miningconcessions',
-                       'protectedareas','indigenouslands']
+                       'protectedareas','indigenouslands','s1composite','s2composite']
       this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
 
@@ -440,13 +442,18 @@ class OuterShell extends React.Component{
           fetch(this.URLS.INFO+"?lat="+e.lngLat.lat+"&lon="+e.lngLat.lng+"&image="+this.state.selectedDate)
             .then(resp => resp.json())  
             .then((resp) => {
+              console.log(resp)
               let ln = Math.ceil(lng*10000)/10000;
               let lt = Math.ceil(lat*10000)/10000;
               let innerHTML = '';
               if (resp.action == 'Error'){
-                innerHTML = `<b>${lt},${ln}</b>: ${resp.message}`;
+                innerHTML = `<b>${lt},${ln}</b>:<br/> ${resp.message}`;
               } else{
-                innerHTML = `<b>${lt},${ln}</b>: ${resp.value}`;
+                innerHTML = `<b>${lt},${ln}</b><br/>`;
+                let cl = resp.value[0]?'Detected':"Not Detected";
+                innerHTML += `<b>Mining Activity</b>: ${cl}<br/>`;
+                let loc = resp.value[1]?[resp.value[1],resp.value[2],resp.value[3]].join(', '):'Outside Region of Interest';
+                innerHTML += `<b>Located In</b>:${loc}`;
               }
               var popup = new mapboxgl.Popup({ closeOnClick: false })
                               .setLngLat([lng, lat])
@@ -505,16 +512,17 @@ class OuterShell extends React.Component{
                 onClick={((e) => this.setState({appinfohidden : !this.state.appinfohidden})).bind(this)}>
                   Methodology & Publications
         </button>
-        <div className="col-sm-12" style={{padding:0}}>
-          {/* <div className="sidebar-sub-icon w_100">
-            <div className = "sub-span">Satellite Layer</div>
-            <label className="switch">
-              <input type="checkbox" onChange={((e) => this.toggleBaseSatellite(e.target.checked)).bind(this)}/>
-              <span className="slider round"></span>
-            </label>
-          </div> */}
-          {this.getSwitch("Satellite Image","satellite")}
-        </div>
+        <button className={(this.state.showBaseLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
+                onClick={((e) => this.setState({showBaseLayers : !this.state.showBaseLayers})).bind(this)}>
+                  Base Layers
+        </button>
+        {(this.state.showBaseLayers)?
+          <div className="col-sm-12" style={{padding:0}}>
+            {this.getSwitch("Satellite Image","satellite")}
+            {this.getSwitch("Sentinel-1 Composite","s1composite")}
+            {this.getSwitch("Sentinel-2 Composite","s2composite")}
+          </div>
+          :""}
         <button className={(this.state.showSelectLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
                 onClick={((e) => this.setState({showSelectLayers : !this.state.showSelectLayers})).bind(this)}>
                   Boundaries

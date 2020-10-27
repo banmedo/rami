@@ -111,6 +111,7 @@ def getMunicipalLayer(request):
 
 def getGEETiles(request):
     name = request.GET.get('name')
+    layer = False  # initial state
     if (name == "municipalities"):
         table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Distritos')
         style = {'color':'#f66', 'fillColor':'#0000', 'width':1}
@@ -131,7 +132,14 @@ def getGEETiles(request):
                   .merge(ee.FeatureCollection('users/nk-sig/rami/shapes/Comunidad_Nativa'))\
                   .merge(ee.FeatureCollection('users/nk-sig/rami/shapes/Reservas_Indigenas'))
         style = {'color':'#f7861b', 'fillColor':'#0000', 'width':1}
-    layer = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
+    elif (name == 's1composite'):
+        layer = ee.Image('users/ramimonitoring/s1mosaicMDD/2020-10-12')
+        style = {}
+    elif (name == 's2composite'):
+        layer = ee.Image('users/ramimonitoring/s2mosaicMDD/2020-10-11')
+        style = {}
+    if(not layer):
+        layer = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
     mapid = ee.data.getTileUrl(layer.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
     return JsonResponse({'url':mapid,'style':style})
 
@@ -227,14 +235,17 @@ def getInfo(request):
         image = request.GET.get('image')
         authGEE()
         image = ee.Image(IMAGE_REPO+'/'+image)
-        pt = image.sampleRegions(ee.Feature(ee.Geometry.Point(lng,lat)))
-        print(pt)
-        size = pt.size().getInfo()
-        if (size > 0):
-            val = pt.first().get('b1').getInfo()
-            return JsonResponse({'action':'Success','value':val})
-        else :
-            return JsonResponse({'action':'Error','message':'No data available for the point!'},status=500)
+        dist = ee.FeatureCollection(LEVELS['mun'])
+        point = ee.Geometry.Point(lng,lat)
+        pt = image.sampleRegions(ee.Feature(point))
+        f = dist.filterBounds(point)
+        classval = ee.Algorithms.If(pt.size().gt(0),pt.first().get('cmap'),0)
+        admnames = ee.Algorithms.If(f.size().gt(0),[f.first().get('NOMBDEP'),
+                                                f.first().get('NOMBPROV'),
+                                                f.first().get('NOMBDIST')],[False,False,False])
+        
+        vals = ee.List([classval]).cat(admnames).getInfo()
+        return JsonResponse({'action':'Success','value':vals})
     except Exception as e:
         print(e)
         return JsonResponse({'action':'Error','message':'Something went wrong!'},status=500)
