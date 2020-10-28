@@ -373,8 +373,8 @@ class OuterShell extends React.Component{
         layout:{visibility:'none'}
       });
 
-      let layerlist = ['districts','municipalities','forestconcessions','miningconcessions',
-                       'protectedareas','indigenouslands','s1composite','s2composite']
+      let layerlist = ['s1composite','s2composite','districts','municipalities','indigenouslands','forestconcessions',
+                       'protectedareas','miningconcessions']
       this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
 
