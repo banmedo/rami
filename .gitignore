@@ -3,8 +3,8 @@ api/shapes/*
 config.py
 appconfigs.js
 *.pyc
-ramipy
-ramipy/*
+venv
+venv/*
 ceo-gateway
 
 __pycache__
