@@ -99,11 +99,11 @@
 }
 
 input:checked + .slider {
-  background-color: #6b376b;
+  background-color: #255c13;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #6b376b;
+  box-shadow: 0 0 1px #255c13;
 }
 
 input:checked + .slider:before {
@@ -150,21 +150,21 @@ input:checked + .slider:before {
 
 .map-upd-btn{
   color: #fff;
-  background-color: #6b376b;
-  border-color: #501950;
+  background-color: #255c13;
+  border-color: #63a050;
   border-radius: 3px;
 }
 
 .map-upd-btn:hover{
   color: #fff;
-  background-color: #a05ba0;
-  border-color: #501950;
+  background-color: #92bd85;
+  border-color: #63a050;
   border-radius: 3px;
 }
 
 .map-upd-btn:active{
   color: #fff;
-  background-color: #560156;
+  background-color: #1F560D;
   border-color: #000000;
   border-radius: 3px;
 }
