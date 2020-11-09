@@ -1,23 +1,33 @@
 class Legend extends React.Component{
 
     palette = {
+        provinces: ['#f66','#0000',3],
         municipalities: ['#f66','#000',1],
         districts: ['#f66','#0000',3],
         forestconcessions: ['#2f2',"#0000",1],
         miningconcessions: ["#ff6","#0000",1],
         protectedareas:["#009b2f", "#009b2f99",1],
         indigenouslands: ["#f7861b", "#0000",1],
-        'ee-Layer': ['#f00','#f00',1]
+        'ee-Layer': ['#f00','#f00',1],
+        change19: ['#ff0000','#ff0000',1],
+        change18: ['#ff6600','#ff6600',1],
+        change17: ['#ffb366','#ffb366',1],
+        change16: ['#ffd11a','#ffd11a',1]
     }
 
     names = {
+        provinces: 'Provinces',
         districts: 'Province Boundary',
         municipalities: 'District Boundary',
         forestconcessions: 'Forest Management Concessions',
         miningconcessions: 'Mining Concessions',
         protectedareas: 'Protected Areas',
         indigenouslands: 'Indigenous Lands',
-        'ee-Layer': 'Predicted Mines'
+        'ee-Layer': 'Predicted Mines',
+        change19: 2019,
+        change18: 2018,
+        change17: 2017,
+        change16: 2016
     }
 
     getLegendEntry = (layer) => {
@@ -37,8 +47,18 @@ class Legend extends React.Component{
         </div>;
     }
 
+    getChangeEntry = (layer) => {
+        let subentries = [9,8,7,6].map((y)=>{
+            return this.getLegendEntry('change1'+y);
+        });
+        return <div key={layer} style={{width:'100%',padding:'1px 3px'}}>
+            Forest Change Year
+            {subentries}
+        </div>
+    }
+
     buildLegend = (list) => {
-        return list.map((layer) => this.getLegendEntry(layer));//.join('');
+        return list.map((layer) => (layer=='ee-Layer'?this.getChangeEntry(layer):this.getLegendEntry(layer)));//.join('');
     }
 
     render(){

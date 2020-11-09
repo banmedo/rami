@@ -355,7 +355,7 @@ class OuterShell extends React.Component{
     this.map = new mapboxgl.Map({
       container: this.mapContainer,
       style: 'mapbox://styles/mapbox/light-v10',
-      center: [-69.57, -12.85],
+      center: [105.22,12.48],
       zoom: 9
     });
 
@@ -373,8 +373,9 @@ class OuterShell extends React.Component{
         layout:{visibility:'none'}
       });
 
-      let layerlist = ['s1composite','s2composite','districts','municipalities','indigenouslands','forestconcessions',
-                       'protectedareas','miningconcessions']
+      // let layerlist = ['s1composite','s2composite','districts','municipalities','indigenouslands','forestconcessions',
+      //                  'protectedareas','miningconcessions']
+      let layerlist = ['provinces'];
       this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
 
@@ -519,8 +520,8 @@ class OuterShell extends React.Component{
         {(this.state.showBaseLayers)?
           <div className="col-sm-12" style={{padding:0}}>
             {this.getSwitch("Satellite Image","satellite")}
-            {this.getSwitch("Sentinel-1 Composite","s1composite")}
-            {this.getSwitch("Sentinel-2 Composite","s2composite")}
+            {/* {this.getSwitch("Sentinel-1 Composite","s1composite")}
+            {this.getSwitch("Sentinel-2 Composite","s2composite")} */}
           </div>
           :""}
         <button className={(this.state.showSelectLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
@@ -529,24 +530,22 @@ class OuterShell extends React.Component{
         </button>
         {(this.state.showSelectLayers)?
           <div className="col-sm-12" style={{padding:0}}>
-            {this.getSwitch("Province Boundary",'districts')}
+            {this.getSwitch("Provinces",'provinces')}
+            {/* {this.getSwitch("Province Boundary",'districts')}
             {this.getSwitch("District Boundary",'municipalities')}
             {this.getSwitch("Indigenous Lands Boundary",'indigenouslands')}
             {this.getSwitch("Forest Management Concessions","forestconcessions")}
             {this.getSwitch("Protected Areas","protectedareas")}
-            {this.getSwitch("Mining Concessions","miningconcessions")}
+            {this.getSwitch("Mining Concessions","miningconcessions")} */}
           </div>
           :""}
         <button className={(this.state.showMineLayers)?'col-sm-12 sidebar-icon active':'col-sm-12 sidebar-icon'}
                 onClick={((e) => this.setState({showMineLayers : !this.state.showMineLayers})).bind(this)}>
-                  Mine Layers
+                  Change Layers
         </button>
         {(this.state.showMineLayers)?
           <div className="col-sm-12" style={{padding:0}}>
-            {this.getSwitch("Mine Alerts (accumulated)", 'ee-Layer')}
-            {/* {this.getSwitch("Historical Mining Data")} */}
-            {/* {this.getSwitch("Illegal Mining (Protected Areas/Ind. Territories")} */}
-            {/* {this.getSwitch("Mining in Concessions")} */}
+            {this.getSwitch("Forest Change", 'ee-Layer')}
           </div>
           :""}
       </div>
@@ -566,11 +565,11 @@ class OuterShell extends React.Component{
           glyphicon='glyphicon-stats'
           clickhandler={((e) => this.setDisplayBox('Stats')).bind(this)}
           tooltip='Stats'/>
-        <SmartIcons
+        {/* <SmartIcons
           parentclass={this.state.displayBox=='Filter'?'active-icon':''}
           glyphicon='glyphicon-filter'
           clickhandler={((e) => this.setDisplayBox('Filter')).bind(this)}
-          tooltip='Filter Image'/>
+          tooltip='Filter Image'/> */}
         <SmartIcons
           parentclass={this.state.displayBox=='Search'?'active-icon':''}
           glyphicon='glyphicon-search'

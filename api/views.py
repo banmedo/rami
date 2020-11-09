@@ -28,8 +28,15 @@ def getCompositeImage(request):
 # view to get a single image (prediction) of a certain date
 def getSingleImage(request):
     authGEE()
-    img = ee.Image(IMAGE_REPO+'/'+request.GET.get('id'))
-    resp = getDefaultStyled(img)
+    # img = ee.Image(IMAGE_REPO+'/'+request.GET.get('id'))
+    # resp = getDefaultStyled(img)
+    img = ee.Image('UMD/hansen/global_forest_change_2019_v1_7')
+    visparams = {'bands':['lossyear'],
+                 'palette':['ff0000','ff6600','ffb366','ffd11a'],
+                 'min':16,
+                 'max':19}
+    mapid = ee.data.getTileUrl(img.getMapId(visparams),0,0,0)[:-5]+'{z}/{x}/{y}'
+    resp = {'url':mapid,'visparams':visparams}
     return JsonResponse(resp)
 
 # get get the list of available images
@@ -99,20 +106,13 @@ def getFeatures(request):
                 fcoll['features'].append(feature)
         return JsonResponse(fcoll)
 
-# get mapid for the legal mines layer
-def getLegalMines(request):
-    authGEE()
-    return JsonResponse(getLegalMineTiles())
-
-# get mapid for municipal boundaries layer
-def getMunicipalLayer(request):
-    authGEE()
-    return JsonResponse(getMunicipalTiles())
-
 def getGEETiles(request):
     name = request.GET.get('name')
     layer = False  # initial state
-    if (name == "municipalities"):
+    if (name == "provinces"):
+        table = ee.FeatureCollection('users/nyeinsoethwal/Cambodia/cambodia_boundary')
+        style = {'color':'#f66', 'fillColor':'#0000', 'width':3}
+    elif (name == "municipalities"):
         table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Distritos')
         style = {'color':'#f66', 'fillColor':'#0000', 'width':1}
     elif (name == "districts"):
