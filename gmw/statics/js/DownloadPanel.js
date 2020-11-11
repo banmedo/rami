@@ -55,12 +55,6 @@ class DownloadPanel extends React.Component{
         <span><a href={this.state.downURL[3]}>Click here to download the {this.state.downURL[0]=='all'?'complete data':'data within '+this.state.downURL[0]} for {this.state.downURL[2]}.</a></span>
       </p>
     }
-    if (!USER_STATE){
-      content = <div style={{'textAlign':'center','width':'100%'}}>
-        <p> Login to view your subscriptions </p>
-        <button type="button" className="btn map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
-      </div>
-    }
 
     return <div className='popup-container'>
       <h3><b> DOWNLOAD DATA </b></h3>
