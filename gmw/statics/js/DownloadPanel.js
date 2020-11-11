@@ -63,6 +63,13 @@ class DownloadPanel extends React.Component{
       <input type='radio' name='downloadRegion' value={2} onChange={this.radioChange.bind(this)} disabled={!this.props.regionSelected}/> Selected Municipality <br/>
       {button}
       {link}
+      {USER_ADM?
+        <div>
+          <b>Download Validated Data</b><br/>
+          <span>
+            <a href='/download' target='blank'>Download Validated data </a>
+          </span>
+        </div>:''}
     </div>
   }
 }
