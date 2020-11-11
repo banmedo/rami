@@ -67,7 +67,7 @@ class DownloadPanel extends React.Component{
         <div>
           <b>Download Validated Data</b><br/>
           <span>
-            <a href='/download'>Download Validated data </a>
+            <a href='/download' target='blank'>Download Validated data </a>
           </span>
         </div>:''}
     </div>
