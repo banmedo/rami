@@ -152,14 +152,17 @@ def getDownloadURL(request):
         authGEE()
         img = ee.Image(IMAGE_REPO+'/'+date)
         if (region == 'all'):
-            region = ee.FeatureCollection(LEVELS['l0'])
+            region = img.geometry().bounds()
         else:
-            l1, l2 = region.split("_");
-            region = ee.FeatureCollection(LEVELS[level])\
+            l1, l2 = region.split("_")
+            regionsel = ee.FeatureCollection(LEVELS[level])\
                         .filter(ee.Filter.eq(FIELDS['mun_l1'],l1.upper()))\
                         .filter(ee.Filter.eq(FIELDS['mun'],l2.upper()))
+            regionbnds = regionsel.geometry().bounds()
+            imgbnds = img.geometry().bounds()
+            region = imgbnds.intersection(regionbnds,20)
         img = img.clip(region)
-        url = img.toByte().getDownloadURL({})
+        url = img.toByte().getDownloadURL({'region':region, 'scale':20})
         return JsonResponse({'action':'success', 'url':url})
     else:
         return JsonResponse({'action':'error','message':'Insufficient Parameters! Malformed URL!'}, status=500)

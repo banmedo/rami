@@ -55,14 +55,27 @@ class DownloadPanel extends React.Component{
         <span><a href={this.state.downURL[3]}>Click here to download the {this.state.downURL[0]=='all'?'complete data':'data within '+this.state.downURL[0]} for {this.state.downURL[2]}.</a></span>
       </p>
     }
+    if (!USER_STATE){
+      content = <div style={{'textAlign':'center','width':'100%'}}>
+        <p> Login to view your subscriptions </p>
+        <button type="button" className="btn map-upd-btn" onClick={()=>{location.href = 'accounts/login'}}>Login</button>
+      </div>
+    }
 
     return <div className='popup-container'>
       <h3><b> DOWNLOAD DATA </b></h3>
-      <b>Select Region</b><br/>
+      <b>Download Predicted Mines</b><br/>
       <input type='radio' name='downloadRegion' value={1} onChange={this.radioChange.bind(this)}/> Complete Data <br/>
       <input type='radio' name='downloadRegion' value={2} onChange={this.radioChange.bind(this)} disabled={!this.props.regionSelected}/> Selected Municipality <br/>
       {button}
       {link}
+      {USER_ADM?
+        <div>
+          <b>Download Validated Data</b><br/>
+          <span>
+            <a href='/download'>Download Validated data </a>
+          </span>
+        </div>:''}
     </div>
   }
 }
