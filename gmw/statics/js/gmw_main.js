@@ -177,6 +177,7 @@ class OuterShell extends React.Component{
           if (list.length > 0) this.getGEELayers(list);
         }, (error) => {
           l(error);
+          list = list.push(name);
           if (list.length > 0) this.getGEELayers(list);
         }
       );
