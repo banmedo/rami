@@ -51,17 +51,6 @@ def getFeatureNames(request):
     f = open(os.path.join(module_dir,'shapes','featureNames.json'),'r').read()
     return JsonResponse(json.loads(f))
 
-    # level2 = fiona.open(os.path.join(module_dir,'shapes','Level2.shp'))
-    # dict = {}
-    # l2list = []
-    # for feat in level2:
-    #     l1name = feat['properties']['ADM1_ES']
-    #     if l1name in dict:
-    #         dict[l1name][feat['properties']['ADM2_ES']] = bounds(feat)
-    #     else:
-    #         dict[l1name] = {feat['properties']['ADM2_ES'] : bounds(feat)}
-    # return JsonResponse({'action':'FeatureNames', 'features': dict})
-
 # get features in a cascading pattern
 def getCascadingFeatureNames(request):
     authGEE()
@@ -112,32 +101,9 @@ def getGEETiles(request):
     if (name == "provinces"):
         table = ee.FeatureCollection('users/nyeinsoethwal/Cambodia/cambodia_boundary')
         style = {'color':'#f66', 'fillColor':'#0000', 'width':3}
-    elif (name == "municipalities"):
-        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Distritos')
-        style = {'color':'#f66', 'fillColor':'#0000', 'width':1}
-    elif (name == "districts"):
-        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Lim_Provincia')
-        style = {'color':'#f66', 'fillColor':'#0000', 'width':3}
-    elif (name == "forestconcessions"):
-        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Concesiones_Forestales')
-        style = {'color':'#2f2', 'fillColor':'#0000', 'width':1}
-    elif (name == "miningconcessions"):
-        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Concesiones_Mineras')
-        style = {'color':'#ff6', 'fillColor':'#0000', 'width':1}
-    elif (name == "protectedareas"):
-        table = ee.FeatureCollection("WCMC/WDPA/current/polygons").filterMetadata('SUB_LOC','contains','PE')
-        style = {"color":'009b2f', "fillColor":"009b2f99","width":1}
-    elif (name == "indigenouslands"):
-        table = ee.FeatureCollection('users/nk-sig/rami/shapes/Comunidad_Campesinas')\
-                  .merge(ee.FeatureCollection('users/nk-sig/rami/shapes/Comunidad_Nativa'))\
-                  .merge(ee.FeatureCollection('users/nk-sig/rami/shapes/Reservas_Indigenas'))
-        style = {'color':'#f7861b', 'fillColor':'#0000', 'width':1}
-    elif (name == 's1composite'):
-        layer = ee.Image('users/ramimonitoring/s1mosaicMDD/2020-10-12')
-        style = {}
-    elif (name == 's2composite'):
-        layer = ee.Image('users/ramimonitoring/s2mosaicMDD/2020-10-11')
-        style = {}
+    elif (name == "grid"):
+        table = ee.FeatureCollection('projects/servir-mekong/CambodiaPAMP/grid')
+        style = {'color':'#666', 'fillColor':'#0000', 'width':3}
     if(not layer):
         layer = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
     mapid = ee.data.getTileUrl(layer.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'

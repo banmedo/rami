@@ -373,9 +373,7 @@ class OuterShell extends React.Component{
         layout:{visibility:'none'}
       });
 
-      // let layerlist = ['s1composite','s2composite','districts','municipalities','indigenouslands','forestconcessions',
-      //                  'protectedareas','miningconcessions']
-      let layerlist = ['provinces'];
+      let layerlist = ['provinces', 'grid'];
       this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
 
@@ -530,6 +528,7 @@ class OuterShell extends React.Component{
         </button>
         {(this.state.showSelectLayers)?
           <div className="col-sm-12" style={{padding:0}}>
+            {this.getSwitch("Grid",'grid')}
             {this.getSwitch("Provinces",'provinces')}
             {/* {this.getSwitch("Province Boundary",'districts')}
             {this.getSwitch("District Boundary",'municipalities')}

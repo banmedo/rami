@@ -91,14 +91,14 @@ class SearchPanel extends React.Component{
     var selectl1='Loading ...', selectl2='';
     var l1names = Object.keys(this.props.featureNames).sort();
     if (l1names.length > 0){
-      var selectl1options = [<option key={-1} value={0} disabled>Select a Province</option>];
+      var selectl1options = [<option key={-1} value={0} disabled>Select a Region</option>];
       l1names.forEach((item, i) => {
         selectl1options.push(<option key={i} value={item}>
           {item}
         </option>);
       });
       selectl1 = <div className="w_100">
-        <small>Province</small>
+        <small>Region</small>
         <select className='w_100' defaultValue={0} onChange={this.stateSelected.bind(this)}>
           {selectl1options}
         </select>
@@ -107,14 +107,14 @@ class SearchPanel extends React.Component{
     var l2objects = this.state.activeMuns;
     var l2names = Object.keys(l2objects).sort()
     if (l2names.length>0){
-      var selectl2options = [<option key={-1} value={0} disabled>Select a District</option>];
+      var selectl2options = [<option key={-1} value={0} disabled>Select a Grid</option>];
       l2names.forEach((item, i) => {
         selectl2options.push(<option key={i} value={l2objects[item]} name={item}>
           {item}
         </option>)
       });
       selectl2 = <div className="w_100">
-        <small>District</small>
+        <small>Grid</small>
         <select className='w_100' defaultValue={0} onChange={(e) => {
             console.log(this.state.activel1+'_'+e.target.selectedOptions[0].getAttribute('name'))
               this.munSelected(e,this.props.pointmapto);
@@ -134,7 +134,7 @@ class SearchPanel extends React.Component{
       {gsearchul}
       <b>Lat Long Search</b>
       <input className='w_100' onKeyUp={(e) => {this.latlngChanged(e,this.props.pointmapto)}} />
-      <b>Select District</b><br/>
+      <b>Select Grid</b><br/>
       {selectl1}
       {selectl2}
     </div>

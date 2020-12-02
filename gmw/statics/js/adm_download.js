@@ -11,10 +11,10 @@ var table = new Tabulator("#datTable", {
 	resizableRows:true,       //allow row order to be changed
 	columns:[                 //define the table columns
 		{title:"user", field:"id", headerFilter:"input"},
-    {title:"longitude", field:"y", headerFilter:"input"},
-    {title:"latitude", field:"x", headerFilter:"input"},
-    {title:"date", field:"dataDate", headerFilter:"number"},
-    {title:"mine", field:"classNum", headerFilter:"number"},
+		{title:"longitude", field:"y", headerFilter:"input"},
+		{title:"latitude", field:"x", headerFilter:"input"},
+		{title:"date", field:"dataDate", headerFilter:"number"},
+		{title:"degflag", field:"classNum", headerFilter:"number"},
 		{title:"label", field:"className", headerFilter:"input"},
 	],
 });

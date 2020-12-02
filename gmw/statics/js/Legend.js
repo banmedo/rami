@@ -2,6 +2,7 @@ class Legend extends React.Component{
 
     palette = {
         provinces: ['#f66','#0000',3],
+        grid : ['#666', "#0000", 3],
         municipalities: ['#f66','#000',1],
         districts: ['#f66','#0000',3],
         forestconcessions: ['#2f2',"#0000",1],
@@ -17,13 +18,14 @@ class Legend extends React.Component{
 
     names = {
         provinces: 'Provinces',
+        grid : 'Grid',
         districts: 'Province Boundary',
         municipalities: 'District Boundary',
         forestconcessions: 'Forest Management Concessions',
         miningconcessions: 'Mining Concessions',
         protectedareas: 'Protected Areas',
         indigenouslands: 'Indigenous Lands',
-        'ee-Layer': 'Predicted Mines',
+        'ee-Layer': 'Predicted Changes',
         change19: 2019,
         change18: 2018,
         change17: 2017,
