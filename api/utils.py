@@ -14,7 +14,7 @@ def authGEE():
     # ee.Initialize()
     return True
 
-def getImageList():
+def getImageNames():
     assetList = ee.data.getList({'id':IMAGE_REPO})
     return list(map(lambda img: img['id'].split('/')[-1], assetList))
 
@@ -40,7 +40,6 @@ def getComposite(minp, maxp, miny, maxy):
     percent = icoll.sum().reproject(crs='EPSG:4326', scale=30).divide(count)
     thresholded = percent.gte(minp).And(percent.lte(maxp))
     return thresholded
-
 
 def getShape(region, level):
     module_dir = os.path.dirname(__file__)
@@ -87,12 +86,18 @@ def subscribedRegionsToFC(regions):
 def getPointsWithin(regions,date):
     fc = subscribedRegionsToFC(regions)
     try:
-        image = ee.Image('UMD/hansen/global_forest_change_2019_v1_7').select('lossyear').mask().toInt()
+        image = getImageForDate(date)
         strat = image.stratifiedSample(numPoints=20,region=fc.geometry(),scale=30,geometries=True)
         return strat
     except Exception as e:
         print(e)
 
+def getImageForDate(date):
+    ic = ee.ImageCollection(IMAGE_REPO)\
+           .select('conf20')\
+           .filterBounds(ee.Geometry.Point([104.77,12.60]))\
+           .filterDate(date)
+    return ic.first(IMAGE_REPO).selfMask()
 
 # helper functions
 def explode(coords):

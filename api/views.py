@@ -28,22 +28,29 @@ def getCompositeImage(request):
 # view to get a single image (prediction) of a certain date
 def getSingleImage(request):
     authGEE()
-    # img = ee.Image(IMAGE_REPO+'/'+request.GET.get('id'))
-    # resp = getDefaultStyled(img)
-    img = ee.Image('UMD/hansen/global_forest_change_2019_v1_7')
-    visparams = {'bands':['lossyear'],
-                 'palette':['ff0000','ff6600','ffb366','ffd11a'],
-                 'min':16,
-                 'max':19}
+    date = ee.Date(request.GET.get('id'))
+    ic = ee.ImageCollection(IMAGE_REPO)\
+           .select('conf20')\
+           .filterBounds(ee.Geometry.Point([104.77,12.60]))\
+           .filterDate(date, date.advance(1,'second'))
+    img = ic.first().selfMask()
+    visparams = {'palette':['ff0000']}
     mapid = ee.data.getTileUrl(img.getMapId(visparams),0,0,0)[:-5]+'{z}/{x}/{y}'
     resp = {'url':mapid,'visparams':visparams}
     return JsonResponse(resp)
 
-# get get the list of available images
+# get get the dates of available images
 def getImageNames(request):
     authGEE()
-    return JsonResponse({'ids':getImageList()})
-    # return HttpResponse('T')
+    ic = ee.ImageCollection(IMAGE_REPO)\
+           .select('conf20')\
+           .filterBounds(ee.Geometry.Point([104.77,12.60]))
+    
+    def imageToDate(image):
+        image = ee.Image(image)
+        return ee.Date(image.get('system:time_start')).format('YYYY-MM-dd')
+
+    return JsonResponse({'ids':ic.toList(ic.size()).map(imageToDate).getInfo()})
 
 # get the names of features (municipality) and their bounding boxes
 def getFeatureNames(request):
@@ -96,17 +103,23 @@ def getFeatures(request):
         return JsonResponse(fcoll)
 
 def getGEETiles(request):
+    mapid = ''
+    style = {}
     name = request.GET.get('name')
-    layer = False  # initial state
     if (name == "provinces"):
         table = ee.FeatureCollection('users/nyeinsoethwal/Cambodia/cambodia_boundary')
         style = {'color':'#f66', 'fillColor':'#0000', 'width':3}
+        layer = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
+        mapid = ee.data.getTileUrl(layer.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
     elif (name == "grid"):
         table = ee.FeatureCollection('projects/servir-mekong/CambodiaPAMP/grid')
         style = {'color':'#666', 'fillColor':'#0000', 'width':3}
-    if(not layer):
         layer = table.style(color=style['color'],fillColor=style['fillColor'],width=style['width'])
-    mapid = ee.data.getTileUrl(layer.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
+        mapid = ee.data.getTileUrl(layer.getMapId(),0,0,0)[:-5]+'{z}/{x}/{y}'
+    elif (name == "annualfloss"):
+        img = ee.Image('UMD/hansen/global_forest_change_2019_v1_7')
+        style = {'bands':['lossyear'],'palette':['ff0000','ff6600','ffb366','ffd11a'],'min':16,'max':19}
+        mapid = ee.data.getTileUrl(img.getMapId(style),0,0,0)[:-5]+'{z}/{x}/{y}'
     return JsonResponse({'url':mapid,'style':style})
 
 # get the downloadurl for images

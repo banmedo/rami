@@ -373,7 +373,7 @@ class OuterShell extends React.Component{
         layout:{visibility:'none'}
       });
 
-      let layerlist = ['provinces', 'grid'];
+      let layerlist = ['provinces', 'grid', 'annualfloss'];
       this.addLayerSources(layerlist.slice().concat('ee-Layer'));
       this.getGEELayers(layerlist.slice());
 
@@ -544,7 +544,8 @@ class OuterShell extends React.Component{
         </button>
         {(this.state.showMineLayers)?
           <div className="col-sm-12" style={{padding:0}}>
-            {this.getSwitch("Forest Change", 'ee-Layer')}
+            {this.getSwitch("Forest Alert", 'ee-Layer')}
+            {this.getSwitch("Annual Forest Loss", 'annualfloss')}
           </div>
           :""}
       </div>
@@ -564,11 +565,11 @@ class OuterShell extends React.Component{
           glyphicon='glyphicon-stats'
           clickhandler={((e) => this.setDisplayBox('Stats')).bind(this)}
           tooltip='Stats'/>
-        {/* <SmartIcons
+        <SmartIcons
           parentclass={this.state.displayBox=='Filter'?'active-icon':''}
           glyphicon='glyphicon-filter'
           clickhandler={((e) => this.setDisplayBox('Filter')).bind(this)}
-          tooltip='Filter Image'/> */}
+          tooltip='Filter Image'/>
         <SmartIcons
           parentclass={this.state.displayBox=='Search'?'active-icon':''}
           glyphicon='glyphicon-search'

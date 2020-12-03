@@ -25,7 +25,8 @@ class Legend extends React.Component{
         miningconcessions: 'Mining Concessions',
         protectedareas: 'Protected Areas',
         indigenouslands: 'Indigenous Lands',
-        'ee-Layer': 'Predicted Changes',
+        'ee-Layer': 'Forest Alert',
+        annualfloss: 'Annual Forest Loss',
         change19: 2019,
         change18: 2018,
         change17: 2017,
@@ -60,7 +61,7 @@ class Legend extends React.Component{
     }
 
     buildLegend = (list) => {
-        return list.map((layer) => (layer=='ee-Layer'?this.getChangeEntry(layer):this.getLegendEntry(layer)));//.join('');
+        return list.map((layer) => (layer=='annualfloss'?this.getChangeEntry(layer):this.getLegendEntry(layer)));//.join('');
     }
 
     render(){
