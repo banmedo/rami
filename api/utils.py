@@ -97,7 +97,7 @@ def getImageForDate(date):
            .select('conf20')\
            .filterBounds(ee.Geometry.Point([104.77,12.60]))\
            .filterDate(date)
-    return ic.first(IMAGE_REPO).selfMask()
+    return ic.first().selfMask()
 
 # helper functions
 def explode(coords):
