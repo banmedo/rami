@@ -35,28 +35,27 @@ class AppInfo extends React.Component{
           activity (illegal, informal, and formal), considering the government’s new formalization process, to better understand how legal mining 
           impacts the forest as distinguished from illegal mining
         </p>
-        <h4> Agreement </h4>
-        <p className='justified-txt'>SERVIR-Amazonia is part of <a href="https://www.servirglobal.net">SERVIR Global</a>, a joint development 
-          initiative of the National Aeronautics and Space Administration (<a href="https://www.nasa.gov">NASA</a>) and the United States Agency 
-          for International Development (<a href="https://www.usaid.gov">USAID</a>). Since 2005, SERVIR has worked in partnership with 
-          countries to use information provided by Earth-observing satellites and geospatial technologies. SERVIR-Amazonia, led by 
-          the Alliance of Bioversity International and the International Center for Tropical Agriculture (<a href="https://ciat.cgiar.org">
-          CIAT</a>), is the newest of five SERVIR hubs. It is a five-year program (2019-2023) that brings together local knowledge
-          and some of the world’s best science in geospatial and Earth observation technology.
+        <h4> Technical Partners </h4>
+        <p className='justified-txt'>The RAMI platform was co-developed by the following organizations, which also provided the data:</p>
+        <div width="100%" style={{textAlign:'center'}}>
+          <img width="100%" src="/static/images/partners1.png"></img>
+        </div>
+        <p className='justified-txt'>
+          RAMI was developed with support of the SERVIR-Amazonia Program which is part of <a href="https://www.servirglobal.net">SERVIR Global</a>, 
+          a joint initiative of the National Aeronautics and Space Administration (<a href="https://www.nasa.gov">NASA</a>) and the United States 
+          Agency for International Development (<a href="https://www.usaid.gov">USAID</a>). Since 2005, SERVIR has worked in partnership with 
+          countries to use information provided by Earth-observing satellites and geospatial technologies. SERVIR-Amazonia, led by the Alliance 
+          of Bioversity International and the International Center for Tropical Agriculture (<a href="https://ciat.cgiar.org">CIAT</a>), is 
+          the newest of five SERVIR hubs. It is a five-year program (2019-2023) that brings together local knowledge and some of the world’s 
+          best science in geospatial and Earth observation technology.
         </p>
-        <h4> Data Sources </h4>
-        <p className='justified-txt'>The RAMI platform is possible with the support provided by the data providers below.</p>
+        <p className='justified-txt'>
+          Thanks to the support of our technical partners, stakeholders can access spatial datasets and interact with our team of experts in order to alert mining activities. 
+        </p>
         <div width="100%" style={{textAlign:'center'}}>
-          <img height="75px" src="/static/images/datasources.png"></img>
+          <img width="100%" src="/static/images/partners2.png"></img>
         </div>
-        <h4> Technical Partners</h4>
-        <p className='justified-txt'>Thanks to the support of our technical partners, stakeholders can access spatial 
-          datasets and interact with our team of experts in order to alert mining activities. </p>
-        <div width="100%" style={{textAlign:'center'}}>
-          <img height="75px" src="/static/images/partners.png"></img>
-        </div>
-
-        <h4> DISCLAIMER </h4>
+        <h4> Disclaimer </h4>
         <p> The data distributed here on the platform is referential; Conservación Amazónica - ACCA provides this 
           data without guarantee of any kind, either express or implicit, including the guarantees of merchantability 
           and suitability for a particular purpose. We kindly ask any users to cite this data in any published material 
