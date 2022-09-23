@@ -28,7 +28,7 @@ httplib2shim==0.0.3
 idna==2.8
 munch==2.5.0
 numpy==1.18.1
-protobuf==3.11.2
+protobuf==3.18.3
 pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pytz==2019.3
